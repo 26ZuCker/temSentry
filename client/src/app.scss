@@ -1,0 +1,12 @@
+/* $red: #ee0a24;
+$blue: #1989fa;
+$orange: #ff976a;
+$green: #07c160;
+$grey-light:#dededebb;
+@mixin wd($direction: column) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: $direction;
+}
+ */
