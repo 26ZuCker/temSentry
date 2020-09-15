@@ -1,4 +1,5 @@
 <template>
+  <!-- 目前左侧边栏不考虑转换为函数式组件因为整体数据过于庞大不适合每次都根据prop传值来更改状态，其中的每一项可以采用函数式组件 -->
   <view class="left-bar-container">
     <!-- 左侧边栏顶部头像 -->
     <view class="left-bar-title-container">
@@ -12,22 +13,34 @@
     </view>
     <!-- 此处的value绑定为数组，其中的值为item的name -->
     <van-collapse
-      :value="currentServerGroupIds"
+      :value="current_server_group_id"
       @change="changeServerGroupId"
-      v-for="serverGroup in serverGroupList"
-      :key="serverGroup.id"
+      v-for="server_group in server_groups_data"
+      :key="server_group.server_group_id"
     >
-      <van-collapse-item :title="serverGroup.name" :name="serverGroup.id">
-        <view v-for="server in serverGroup.serverList" :key="server.id" class="user-server-hover">
+      <van-collapse-item
+        :title="server_group.server_group_name"
+        :name="server_group.server_group_id"
+      >
+        <view
+          v-for="server in server_group.server_groups"
+          :key="server.server_id"
+          class="user-server-hover"
+        >
           <van-button
             custom-style="width:85%;"
-            :type="activeClass(server.id)"
-            @tap="chooseServer(server.id,serverGroup.id)"
-          >{{server.name}}</van-button>
-          <van-icon :name="imgExclamation" color="orange" />
+            :type="activeClass(server.server_id)"
+            @tap="chooseServer(server.server_id,server_group.server_group_id)"
+          >{{server.server_name}}</van-button>
+          <van-icon :name="imgExclamation" color="orange" v-if="toBool(server.is_alarm)" />
         </view>
         <slot-view name="value">
-          <van-icon :name="imgExclamation" color="orange" size="1.5rem" />
+          <van-icon
+            :name="imgExclamation"
+            color="orange"
+            size="1.5rem"
+            v-if="toBool(server_group.is_alarm)"
+          />
         </slot-view>
       </van-collapse-item>
     </van-collapse>
@@ -42,11 +55,11 @@
 import imgExclamation from '../images/exclamation.png'
 export default {
   inheritAttrs: false,
-  name: '',
   components: {},
   data: () => ({
-    currentServerId: 'sg1s1',
-    currentServerGroupIds: ['sg1'],
+    //当前选中的服务器和服务器组id
+    current_server_id: '',
+    current_server_group_id: [],
     searchInput: '',
     //额外维护一个需要预警的服务器id数组而无需总是使用computed
     hasProblem: [],
@@ -54,16 +67,18 @@ export default {
   }),
   props: {
     //后续需要优化不需要传递完整的服务器组
-    serverGroupList: { type: Array, default: [] }
+    server_groups_data: { type: Array, default: null },
+    server_group_id: { type: String, default: null },
+    server_id: { type: String, default: null },
   },
   methods: {
     changeServerGroupId (e) {
-      this.currentServerGroupIds = e.detail
+      this.current_server_group_id = e.detail
     },
     //通知父组件更改显示
-    chooseServer (serverId, groupId) {
-      this.currentServerId = serverId
-      const res = { serverId, groupId }
+    chooseServer (server_id, server_group_id) {
+      this.current_server_id = server_id
+      const res = { server_id, server_group_id }
       this.$emit('onChooseServer', res)
     },
     toCus () {
@@ -71,30 +86,22 @@ export default {
     },
   },
   computed: {
-    /*     hasProblem () {
-          return function (server) {
-            //可能传递一个服务器数组或只传递一个服务器id
-            const isArray =
-              Array.isArray ?? (arg => Object.prototype.toString.call(arg) === "[object Array]")
-            if (isArray(server)) {
-              server.forEach(v => {
-    
-              })
-            } else {
-    
-            }
-            const percent = ((status / threshold) * 100) | 0
-            return percent > 70
-          }
-        }, */
     activeClass () {
-      return function (id) {
-        return this.currentServerId === id ? 'primary' : 'default'
+      return function (server_id) {
+        return this.current_server_id === server_id ? 'primary' : 'default'
+      }
+    },
+    toBool () {
+      return function (strBool) {
+        return strBool === 'true'
       }
     }
   },
+  //由于初始化即刚进入程序时index页面也是默认显示第一个组的第一个服务器
   created () {
-    console.log(this.serverGroupList)
+    this.current_server_id = this.server_id
+    this.current_server_group_id.push(this.server_group_id)
+    console.log()
   },
 }
 </script>
@@ -118,15 +125,5 @@ $green: #07c160;
   border-radius: 50%;
   width: 5rem;
   height: 5rem;
-}
-.user-server-active {
-  padding-left: 1rem;
-  padding-bottom: 0.5rem;
-  margin: 0.1rem;
-  border-left: 0.3rem $green solid;
-  background-color: #dededebb;
-  text-align: center;
-  align-self: center;
-  font-weight: 400;
 }
 </style>

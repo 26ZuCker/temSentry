@@ -3,13 +3,12 @@ import Taro from '@tarojs/taro';
 
 import store from './store/index';
 
+//taro自带长列表，建议场景不复杂的情况下采用触底和额外维护一个可视项的数组即可
 import VirtualList from '@tarojs/components/virtual-list';
 Vue.use(VirtualList);
 
 import getRouteParams from './utils/getRouteParams';
-import promisify from './utils/promisify';
 Vue.prototype.$Taro = Taro;
-Vue.prototype.$promisify = promisify;
 Vue.prototype.$getRouteParams = getRouteParams;
 
 //import './app.scss';

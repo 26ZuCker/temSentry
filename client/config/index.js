@@ -1,3 +1,4 @@
+const path = require('path');
 const config = {
   projectName: 'taroFace',
   date: '2020-9-11',
@@ -10,6 +11,12 @@ const config = {
   sourceRoot: 'src',
   outputRoot: 'dist',
   plugins: [],
+  //设置别名
+  alias: {
+    '@/apis': path.resolve(__dirname, '..', 'src/apis'),
+    '@/components': path.resolve(__dirname, '..', 'src/components'),
+    '@/utils': path.resolve(__dirname, '..', 'src/utils'),
+  },
   defineConstants: {},
   //直接复制某些组件库而不经过转换
   copy: {
@@ -21,6 +28,10 @@ const config = {
   },
   framework: 'vue',
   mini: {
+    //预渲染
+    prerender: {
+      //include: ['components/LeftBar'],
+    },
     postcss: {
       pxtransform: {
         enable: true,
@@ -45,7 +56,7 @@ const config = {
       },
     },
   },
-  h5: {
+  /*   h5: {
     publicPath: '/',
     staticDirectory: 'static',
     postcss: {
@@ -61,10 +72,10 @@ const config = {
         },
       },
     },
-  },
+  }, */
 };
 
-module.exports = function (merge) {
+module.exports = function(merge) {
   if (process.env.NODE_ENV === 'development') {
     return merge({}, config, require('./dev'));
   }
