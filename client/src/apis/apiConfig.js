@@ -1,6 +1,3 @@
-/**
- * 统一promise封装请求
- */
 const promisifyHttp = (Taro, BASE_API, { url, method }) => (data = {}) =>
   new Promise((resolve, reject) => {
     Taro.request({
@@ -16,4 +13,9 @@ const promisifyHttp = (Taro, BASE_API, { url, method }) => (data = {}) =>
     });
   });
 
-export default promisifyHttp;
+const BASE_API = 'http://192.168.43.224:8000';
+
+export default {
+  BASE_API,
+  promisifyHttp,
+};

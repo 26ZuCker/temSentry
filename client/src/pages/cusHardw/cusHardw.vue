@@ -1,24 +1,26 @@
 <template>
   <van-cell-group>
+    <!-- 点击提交后的顶部通知 -->
+    <van-notify id="van-notify" />
     <!-- 标题 -->
-    <view class="cus-title">sg1s1 CPU 管理</view>
+    <view class="cus-title">{{hardware.inform}}</view>
     <!-- 硬件类别，若进入则改为可选 -->
-    <van-cell title="类别">
+    <!-- <van-cell title="类别">
       <van-dropdown-menu>
-        <!-- 注意需要额外增加一条value作为key -->
+        注意需要额外增加一条value作为key
         <van-dropdown-item :value="activeHarewareVal" :options="hardwareType" />
       </van-dropdown-menu>
-    </van-cell>
+    </van-cell>-->
     <!-- 阈值 -->
     <van-cell title="阈值">
-      <van-stepper :value="threshold" @change="changeThreshold" />
+      <van-stepper :value="hardware.warning_temp" @change="changeThreshold" />
     </van-cell>
     <!-- 是否接收通知 -->
     <van-cell title="接收通知">
       <van-switch :checked="isGetNotice" @change="isGetNotice=!isGetNotice" />
     </van-cell>
     <!-- 备注 -->
-    <van-field :value="remark" label="备注" placeholder="备注" autosize />
+    <van-field :value="remarks" label="备注" placeholder="备注" autosize />
     <!-- 确定和取消按钮 -->
     <view>
       <van-button
@@ -36,6 +38,8 @@
 </template>
 
 <script>
+import Notify from '../../components/vant-weapp/dist/notify/notify.js'
+import { get_hardware_data, save_hardware_data } from '../../apis/serverApi.js'
 
 export default {
   inheritAttrs: false,
@@ -54,67 +58,95 @@ export default {
     ],
     activeHarewareVal: '101',
     isGetNotice: true,
-    threshold: 0,
-    remark: ''
+    //真正需要改变的数据
+    warning_temp: -26,
+    remarks: '',
+    //根据页面传参的三个id再在该页面发送http请求获取需要改变的数据如阈值和备注
+    hardware: {},
   }),
   props: {
     //通过按钮点击直接传值才需要该hardware，否则解构其取下面的值
-    hardware: { type: Object, default: null }
   },
   methods: {
     changeThreshold (e) {
-      console.log(e)
+      this.warning_temp = e.detail
     },
-    submitCus () {
-      console.log('loading ...')
+    notifyMsg (msg, type = 'primary') {
+      Notify({
+        message: msg,
+        type: type,
+        //此处相当于请求的限时即超过该时间仍无响应则默认发送失败
+        duration: 5000
+      })
+    },
+    async submitCus () {
+      this.notifyMsg('post data now', 'warning')
       this.isSubmit = true
-      //发送put请求且接收响应正常且完成才回调
-      setTimeout(() => {
-        this.toBack()
-      }, 1000)
+      const params = {
+        server_group_id: this.server_group_id,
+        server_id: this.server_id,
+        hardware_id: this.hardware.id,
+        remarks: this.remarks,
+        warning_temp: this.warning_temp
+      }
+      try {
+        const res = await (save_hardware_data(params))
+        console.log(res)
+        //如果正确响应则关闭顶部提示
+        if (res.data.code === '1') {
+          this.notifyMsg('post data successfully')
+          //发送put请求且接收响应正常且完成才回调
+          const timer = setTimeout(() => {
+            this.toBack()
+          }, 1000)
+          this.$once('hook:beforeDestroy', () => {
+            clearTimeout(timer)
+          })
+        }
+      } catch (error) {
+        console.log(error)
+      }
     },
     toBack () {
       const url = `../${this.fromPath}/${this.fromPath}`
-      this.$Taro.redirectTo({
-        url: url,
-        fail: function (err) {
-          //不能通过redirect回到tabbar页面
-          if (err.errMsg === 'redirectTo:fail can not redirectTo a tabbar page') {
-            this.$Taro.switchTab({ url: url })
-          } else {
-            console.log(err)
-          }
-        }
+      this.$Taro.switchTab({
+        url: url
       })
     }
   },
   computed: {},
   watch: {},
-  //获取路由传参
+  //taro可以在onload生命周期内解构参数options或通过getCurrentPages获取页面传参，推荐在onLoad内即可因为接近原生
+  async onLoad (options) {
+    this.server_group_id = options.server_group_id
+    this.server_id = options.server_id
+    const hardware_id = options.hardware_id
+    try {
+      this.hardware = (await get_hardware_data({
+        server_group_id: this.server_group_id,
+        server_id: this.server_id,
+        hardware_id: hardware_id
+      })).data
+      this.warning_temp = this.hardware.warning_temp
+    } catch (error) {
+      console.log(error)
+    }
+  },
   created () {
-    const route = this.$Taro.getCurrentPages()
-    const { params, fromPath } = this.$getRouteParams(route)
-    this.fromPath = fromPath
-    console.log(params)
-  }
+    this.fromPath = this.$Taro.getCurrentPages()[0].route.split('/')[1];
+  },
 }
 </script>
 
 <style lang='scss' >
-@mixin wd($direction: column) {
+.cus-hardware-btn-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: $direction;
-}
-.cus-hardware-btn-container {
-  @include wd(row);
+  flex-direction: row;
   button {
     margin: 2rem;
   }
-}
-.cus-hardware-btn {
-  margin-top: 3rem;
 }
 .cus-title {
   text-align: center;

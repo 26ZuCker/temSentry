@@ -27,8 +27,6 @@
 </template>
 
 <script>
-import Taro from '@tarojs/taro'
-
 export default {
   inheritAttrs: false,
   components: {},
@@ -39,24 +37,28 @@ export default {
   }),
   props: {
     hardware: { type: Object, required: true },
+    //用于点击跳转
+    server_group_id: { type: String, required: true },
+    server_id: { type: String, required: true },
   },
   methods: {
-    toCusHardW (id) {
+    toCusHardW (hardware_id) {
       //this.isLoading = true
       const that = this
+      //后续改用vuex以避免总是页面传参
       this.$Taro.navigateTo({
-        url: `../cusHardw/cusHardw?`,
-        events: {
-          // 为指定事件添加一个监听器，获取被打开页面传送到当前页面的数据
-          acceptDataFromOpenedPage: function (data) {
-            console.log(data)
-          },
-        },
-        success: function (res) {
-          // 通过eventChannel向被打开页面传送大量如json的数据
-          res.eventChannel.emit('acceptDataFromOpenerPage', { data: 'test' })
-          //that.isLoading = false
-        }
+        url: `../cusHardw/cusHardw?server_group_id=${this.server_group_id}&server_id=${this.server_id}&hardware_id=${this.hardware.id}`,
+        /*         events: {
+                  // 为指定事件添加一个监听器，获取被打开页面传送到当前页面的数据
+                  acceptDataFromOpenedPage: function (data) {
+                    console.log(data)
+                  },
+                },
+                success: function (res) {
+                  // 通过eventChannel向被打开页面传送大量如json的数据
+                  res.eventChannel.emit('acceptDataFromOpenerPage', { data: 'test' })
+                  //that.isLoading = false
+                } */
       })
     },
   },

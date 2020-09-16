@@ -16,9 +16,10 @@ const config = {
     '@/apis': path.resolve(__dirname, '..', 'src/apis'),
     '@/components': path.resolve(__dirname, '..', 'src/components'),
     '@/utils': path.resolve(__dirname, '..', 'src/utils'),
+    '@/images': path.resolve(__dirname, '..', 'src/images'),
   },
   defineConstants: {},
-  //直接复制某些组件库而不经过转换
+  //直接复制某些组件库而不经过转换，后续优化可不直接复制所有的组件
   copy: {
     patterns: [
       { from: 'src/components/vant-weapp/dist', to: 'dist/components/vant-weapp/dist' },
@@ -35,7 +36,6 @@ const config = {
     postcss: {
       pxtransform: {
         enable: true,
-
         config: {
           //由于taro默认小程序使用单位转换为rpx而vant使用px所以需要禁止转换
           selectorBlackList: [/^.van-.*?$/],

@@ -36,4 +36,9 @@ export default {
     backgroundColor: '#fff',
     borderStyle: 'white',
   },
+  usingComponents: {
+    'van-button': './components/vant-weapp/dist/button/index',
+    'van-cell': './components/vant-weapp/dist/cell/index',
+    'van-cell-group': './components/vant-weapp/dist/cell-group/index',
+  },
 };

@@ -1,7 +1,7 @@
 <template>
   <view class="index-container">
     <!-- 下拉刷新loading -->
-    <view v-show="isTop">loading...</view>
+    <view v-if="isTop"></view>
     <!-- 左侧边栏 -->
     <van-popup
       :show="isShowLeftBar"
@@ -29,50 +29,60 @@
       </slot-view>
       <view class="index-server-title">{{server.server_name}}</view>
     </van-cell>
-    <!-- 服务器状态点击拓展栏 -->
+    <!-- 工作室状态 -->
     <van-collapse :value="isShowDetail" @change="showDetail">
       <van-collapse-item name="1" title="实验室状态">
-        <slot-view name="value">
-          <van-icon :name="imgExclamation" v-show="isRoomAlarm" />
+        <slot-view name="value" v-if="isComputerAlarm">
+          <van-icon :name="imgExclamation" />
         </slot-view>
-        <!-- 展示当前服务器所属实验室即局域的整体信息，采用tag或进度条方式展示 -->
-        <van-cell-group v-for="data in computer_room_dataArr" :key="data.id">
+
+        <van-cell-group v-for="data in computer_room_dataArr" :key="data.name">
           <van-cell>
             <van-progress
-              :pivot-text="roomText(data.name,data.status)"
-              :color="stateColor(data.status)"
+              :pivot-text="roomText(data.name,data.value)"
+              :color="stateColor(data.value,data.warning_value)"
               custom-class="progress-position"
-              :percentage="data.status"
+              :percentage="percent(data.value,data.warning_value)"
             />
           </van-cell>
         </van-cell-group>
       </van-collapse-item>
     </van-collapse>
-    <!-- 当前服务器硬件主体，由于直接计算是否出问题，所以需要传递所属父的id以方便传入vuex -->
+    <!--     <progress :computer_room_dataArr="computer_room_dataArr"></progress>
+    -->
+    <!-- 当前服务器硬件主体，由于直接计算是否出问题，所以需要传递所属父的id以方便传入vuex
+    注意此处传入应当为可视区内的数组然后只在父组件内刷新传入子组件内的props-->
     <view v-for="hardware in hardwareArr" :key="hardware.id">
-      <hardware :hardware="hardware"></hardware>
+      <hardware
+        :hardware="hardware"
+        @tap="toCusHardW(hardware.id)"
+        :server_group_id="server_group_id"
+        :server_id="server.server_id"
+      ></hardware>
     </view>
     <!-- 触底加载更多loading -->
-    <view v-show="isBottom">loading...</view>
+    <view v-if="isBottom">loading...</view>
   </view>
 </template>
 
 <script>
 //taro加载本地静态资源
-import imgExclamation from '../../images/exclamation.png'
-import imgMore from '../../images/more.png'
+import imgExclamation from '../../images/exclamation.webp'
+import imgMore from '../../images/more.webp'
 //获取定时任务配置
 import scheduleConfig from '../../utils/schedule.js'
 //获取api
-import allApis from '../../apis/initApi.js'
+import { get_all_data, get_computer_room_data, get_hardware_data, get_server_data } from '@/apis/serverApi.js'
+import { commonProps } from '../../../dist/components/vant-weapp/dist/field/props'
 
 //由于左侧边栏载入数据量过大则采用taro的预渲染该组件
-import LeftBar from '../../components/LeftBar'
+//import LeftBar from '../../components/LeftBar'
 
 export default {
   components: {
-    hardware: () => import('../../components/hardware'),
-    LeftBar
+    hardware: () => import('@/components/hardware'),
+    LeftBar: () => import('@/components/LeftBar'),
+    Progress: () => import('@/components/Progress')
   },
   data: () => ({
     //组件显示项
@@ -94,19 +104,22 @@ export default {
     //当前多个服务器组的整体信息
     computer_room_data: {},
     //首屏渲染
-    isMounted: false
-    //当前页面用到的api
-
+    isMounted: false,
+    //渲染当前可见数组，但仍需要提前存好所有的硬件id
+    visibleHardware: [],
+    //定时任务
+    timer: null
   }),
   methods: {
     onClose () {
       this.isShowLeftBar = false
       this.$Taro.showTabBar({ animation: true })
     },
-    async refresh () {
+    async get_all_data () {
       //初始化直接获取所有服务器组的信息，注意此时只包括id
       try {
-        const all_data = (await allApis.get_all_data()).data
+        const all_data = (await get_all_data()).data
+        console.log(all_data)
         if (all_data) {
           //注意server_groups_data为数组
           this.server_groups_data = all_data.server_groups_data
@@ -122,6 +135,18 @@ export default {
         console.log(error)
       }
     },
+    //局部即只针对当前服务器和工作室整体数据刷新
+    async refresh () {
+      const [res1, res2] = await Promise.all([
+        get_computer_room_data(),
+        get_server_data({ server_group_id: this.server_group_id, server_id: this.server.server_id, })])
+      //只获取工作室整体的value而不是所有数据
+      const computer_room_data = res1.data.computer_room_data
+      for (let k in computer_room_data) {
+        this.computer_room_data[k].value = computer_room_data[k]
+      }
+      this.server = res2.data
+    },
     showLeftBar () {
       this.isShowLeftBar = !this.isShowLeftBar
       this.$Taro.hideTabBar({ animation: true })
@@ -135,26 +160,28 @@ export default {
         .find(v => v.server_group_id === server_group_id).server_groups
         .find(v => v.server_id === server_id)
     },
+    getPercent (status, threshold = 100) {
+      return ((status / threshold) * 100) | 0
+    },
+
   },
   computed: {
+    toBool () {
+      return function (strBool) {
+        return strBool === 'true'
+      }
+    },
     //进度条颜色
     stateColor () {
-      return function (status, threshold = 100) {
-        const percent = ((status / threshold) * 100) | 0
+      return function (status, threshold) {
+        const percent = this.getPercent(status, threshold)
         return percent < 70 ? '#07c160' : (percent < 100 ? '#ff976a' : '#ee0a24')
       }
     },
-    //转换json格式的实验室整体信息为数组
-    computer_room_dataArr () {
-      const res = []
-      //注意此处只保存地址所以理论上占用空间小
-      const data = this.computer_room_data
-      Object.keys(data).forEach((v, i) => {
-        res.push(
-          { id: i, name: v, status: data[v] }
-        )
-      })
-      return res
+    percent () {
+      return function (status, threshold) {
+        return this.getPercent(status, 100)
+      }
     },
     //整合目前后端传回的数据格式为cpu_list和gpu_list分开为一个数组
     //后续需要在hardware内并且改变组件的格式这样不用重复在遍历整个server数组
@@ -167,14 +194,23 @@ export default {
       }
       return res
     },
+    computer_room_dataArr () {
+      const computer = this.computer_room_data
+      const res = []
+      //注意第一层遍历为list
+      for (let key in computer) {
+        res.push({ ...computer[key], name: key })
+      }
+      return res
+    },
     roomText () {
       return function (name, status) {
         return `${name}-${status}`
       }
     },
     //整个实验室的信息是否出现问题
-    isRoomAlarm () {
-      return this.computer_room_dataArr.some(v => v.status > 100)
+    isComputerAlarm () {
+      return this.computer_room_dataArr.some(v => v.is_alarm === 'true')
     }
   },
   /**
@@ -194,38 +230,42 @@ export default {
    * @method onPageScroll(object)
    */
   async created () {
-    this.refresh()
-    console.log(this.computer_room_data)
-  },
-  mounted () {
-    this.$Taro.nextTick(() => {
-      this.isMounted = false
-    })
+    //注意此处由于get_all_data内部已经是await所以此处即created不能在来一层await否则会提前传空值给子组件
+    await this.get_all_data()
   },
   //定时获取当前服务器所有硬件信息
-  /*   beforeMount () {
-      setInterval(async () => {
-        await this.refreshHardware()
-      }, scheduleConfig.period)
-    }, */
+  async mounted () {
+    //为了自定义取消该定时任务所以注入data
+    this.timer = setInterval(async () => {
+      this.refresh()
+    }, scheduleConfig.period)
+    //beforeDestroy时即destroy前消除定时器
+    this.$once('hook:beforeDestroy', () => {
+      clearInterval(this.timer)
+    })
+    /* this.$Taro.nextTick(() => {
+      this.isMounted = false
+    }) */
+  },
   //监听下拉刷新
   async onPullDownRefresh () {
     //手动实现下拉刷新
     //Taro.startPullDownRefresh()
     //获取完数据后停止下拉事件
-    console.log('refresh now ...')
+    console.log('get_all_data now ...')
     this.isTop = true
     await this.refresh()
-    Taro.stopPullDownRefresh()
+    this.$Taro.stopPullDownRefresh()
     this.isTop = false
   },
   //监听下拉触底事件，获取更多数据
-  /*   onReachBottom () {
-      this.isBottom = true
-      console.log('get more')
-      await this.showMoreHardware()
-      this.isBottom = false
-    }, */
+  onReachBottom () {
+    this.isBottom = true
+    console.log('get more ...')
+    //this.visibleHardware.push()
+    //await this.showMoreHardware()
+    this.isBottom = false
+  },
 }
 </script>
 <style lang="scss">

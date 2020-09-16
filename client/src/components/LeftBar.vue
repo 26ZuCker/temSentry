@@ -1,6 +1,6 @@
 <template>
   <!-- 目前左侧边栏不考虑转换为函数式组件因为整体数据过于庞大不适合每次都根据prop传值来更改状态，其中的每一项可以采用函数式组件 -->
-  <view class="left-bar-container">
+  <view class="left-bar-container" v-if="server_id">
     <!-- 左侧边栏顶部头像 -->
     <view class="left-bar-title-container">
       <image
@@ -18,20 +18,21 @@
       v-for="server_group in server_groups_data"
       :key="server_group.server_group_id"
     >
+      <!-- 在不采用vuex的前提下假如再细分item为子组件则需要隔一代传值给父即index而且由于样式的改变无法采用函数式组件则此处是否再细分组件有待商榷 -->
       <van-collapse-item
         :title="server_group.server_group_name"
         :name="server_group.server_group_id"
+        content-class="van-collapse-item__content"
       >
         <view
           v-for="server in server_group.server_groups"
           :key="server.server_id"
-          class="user-server-hover"
+          :class="activeClass(server.server_id)"
         >
-          <van-button
-            custom-style="width:85%;"
-            :type="activeClass(server.server_id)"
+          <text
+            class="left-bar-item-title"
             @tap="chooseServer(server.server_id,server_group.server_group_id)"
-          >{{server.server_name}}</van-button>
+          >{{server.server_name}}</text>
           <van-icon :name="imgExclamation" color="orange" v-if="toBool(server.is_alarm)" />
         </view>
         <slot-view name="value">
@@ -52,7 +53,7 @@
 </template>
 
 <script>
-import imgExclamation from '../images/exclamation.png'
+import imgExclamation from '../images/exclamation.webp'
 export default {
   inheritAttrs: false,
   components: {},
@@ -71,6 +72,28 @@ export default {
     server_group_id: { type: String, default: null },
     server_id: { type: String, default: null },
   },
+  computed: {
+    activeClass () {
+      return function (server_id) {
+        //return this.current_server_id === server_id ? 'primary' : 'default'
+        return this.current_server_id === server_id ? 'btn-container btn-active' : 'btn-container btn-unvisited'
+      }
+    },
+    toBool () {
+      return function (strBool) {
+        return strBool === 'true'
+      }
+    },
+  },
+  //由于父组件异步获取数据所以只能监听prop来改变子组件内的data
+  watch: {
+    server_id: {
+      handler (n, o) {
+        console.log(this.current_server_id)
+        this.current_server_id = n
+      }, immediate: true
+    }
+  },
   methods: {
     changeServerGroupId (e) {
       this.current_server_group_id = e.detail
@@ -85,45 +108,49 @@ export default {
       this.$Taro.navigateTo({ url: '../cusHardw/cusHardw' })
     },
   },
-  computed: {
-    activeClass () {
-      return function (server_id) {
-        return this.current_server_id === server_id ? 'primary' : 'default'
-      }
-    },
-    toBool () {
-      return function (strBool) {
-        return strBool === 'true'
-      }
-    }
-  },
   //由于初始化即刚进入程序时index页面也是默认显示第一个组的第一个服务器
   created () {
+    console.log(this.server_id)
     this.current_server_id = this.server_id
     this.current_server_group_id.push(this.server_group_id)
-    console.log()
-  },
+  }
 }
 </script>
 
 <style lang='scss' >
-@mixin wd() {
+@mixin wd($direction: column, $justify-content: center) {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: $direction;
+  justify-content: $justify-content;
   align-items: center;
 }
-$green: #07c160;
-
-.left-bar-title-container {
-  @include wd();
+.van-collapse-item__content {
+  padding: 0px !important;
 }
-.left-bar-btn-container {
+.btn-container {
+  @include wd(row, space-around);
+  color: #000000;
+  padding-top: 0.5rem;
+  padding-left: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 1rem;
+}
+.btn-active {
+  border-left: #07c160 0.5rem solid;
+  background-color: #dededebb;
+}
+.btn-unvisited {
+  padding-left: 0.5rem;
+}
+.left-bar-title-container {
   @include wd();
 }
 .left-bar-title-avatar {
   border-radius: 50%;
   width: 5rem;
   height: 5rem;
+}
+.left-bar-item-title {
+  width: 78%;
 }
 </style>

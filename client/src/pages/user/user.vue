@@ -31,7 +31,7 @@ export default {
   },
   data: () => ({
     toolList: [],
-    defaultSrc: '../../static/images/user-active.png',
+    defaultSrc: '../../images/user-active.png',
     userInfo: null,
   }),
   props: {},
