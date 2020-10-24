@@ -71,7 +71,7 @@ export default {
     changeThreshold (e) {
       this.warning_temp = e.detail
     },
-    notifyMsg (msg, type = 'primary') {
+    notifyMsg (msg, type = 'success') {
       Notify({
         message: msg,
         type: type,
@@ -80,7 +80,7 @@ export default {
       })
     },
     async submitCus () {
-      this.notifyMsg('post data now', 'warning')
+      this.notifyMsg('数据提交中', 'warning')
       this.isSubmit = true
       const params = {
         server_group_id: this.server_group_id,
@@ -91,17 +91,23 @@ export default {
       }
       try {
         const res = await (save_hardware_data(params))
-        console.log(res)
-        //如果正确响应则关闭顶部提示
+        this.isSubmit = false
         if (res.data.code === '1') {
-          this.notifyMsg('post data successfully')
+          this.notifyMsg('数据提交完成')
           //发送put请求且接收响应正常且完成才回调
           const timer = setTimeout(() => {
             this.toBack()
           }, 1000)
-          this.$once('hook:beforeDestroy', () => {
+          this.$once('hook:destroy', () => {
             clearTimeout(timer)
           })
+        } else if (res.data.code === '-1') {
+          this.notifyMsg('数据提交失败', 'danger')
+        }
+
+        //如果正确响应则关闭顶部提示
+        if (res.data.code === '1') {
+
         }
       } catch (error) {
         console.log(error)

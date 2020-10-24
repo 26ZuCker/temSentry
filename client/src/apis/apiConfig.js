@@ -13,7 +13,7 @@ const promisifyHttp = (Taro, BASE_API, { url, method }) => (data = {}) =>
     });
   });
 
-const BASE_API = 'http://192.168.43.224:8000';
+const BASE_API = 'http://192.168.43.75:5000';
 
 export default {
   BASE_API,

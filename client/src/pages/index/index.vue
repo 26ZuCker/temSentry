@@ -22,13 +22,15 @@
         @onChooseServer="chooseServer"
       ></left-bar>
     </van-popup>
-    <!-- 顶部服务器名称和左侧按钮 -->
-    <van-cell>
-      <slot-view name="title">
-        <van-icon :name="imgMore" size="1.5rem" @tap="showLeftBar" />
-      </slot-view>
-      <view class="index-server-title">{{server.server_name}}</view>
-    </van-cell>
+    <!-- 顶部服务器名称和左侧按钮，原生固定顶部的粘性组件 -->
+    <van-sticky>
+      <van-cell>
+        <slot-view name="title">
+          <van-icon :name="imgMore" size="1.5rem" @tap="showLeftBar" />
+        </slot-view>
+        <view class="index-server-title">{{server.server_name}}</view>
+      </van-cell>
+    </van-sticky>
     <!-- 工作室状态 -->
     <van-collapse :value="isShowDetail" @change="showDetail">
       <van-collapse-item name="1" title="实验室状态">
@@ -67,13 +69,12 @@
 
 <script>
 //taro加载本地静态资源
-import imgExclamation from '../../images/exclamation.webp'
-import imgMore from '../../images/more.webp'
+import imgExclamation from '../../images/exclamation.png'
+import imgMore from '../../images/more.png'
 //获取定时任务配置
 import scheduleConfig from '../../utils/schedule.js'
 //获取api
 import { get_all_data, get_computer_room_data, get_hardware_data, get_server_data } from '@/apis/serverApi.js'
-import { commonProps } from '../../../dist/components/vant-weapp/dist/field/props'
 
 //由于左侧边栏载入数据量过大则采用taro的预渲染该组件
 //import LeftBar from '../../components/LeftBar'
@@ -118,8 +119,7 @@ export default {
     async get_all_data () {
       //初始化直接获取所有服务器组的信息，注意此时只包括id
       try {
-        const all_data = (await get_all_data()).data
-        console.log(all_data)
+        const all_data = (await get_all_data).data
         if (all_data) {
           //注意server_groups_data为数组
           this.server_groups_data = all_data.server_groups_data
@@ -140,6 +140,8 @@ export default {
       const [res1, res2] = await Promise.all([
         get_computer_room_data(),
         get_server_data({ server_group_id: this.server_group_id, server_id: this.server.server_id, })])
+      console.log(this.computer_room_data)
+      console.log(res1.data.computer_room_data)
       //只获取工作室整体的value而不是所有数据
       const computer_room_data = res1.data.computer_room_data
       for (let k in computer_room_data) {
@@ -237,7 +239,7 @@ export default {
   async mounted () {
     //为了自定义取消该定时任务所以注入data
     this.timer = setInterval(async () => {
-      this.refresh()
+      await this.refresh()
     }, scheduleConfig.period)
     //beforeDestroy时即destroy前消除定时器
     this.$once('hook:beforeDestroy', () => {
@@ -254,7 +256,7 @@ export default {
     //获取完数据后停止下拉事件
     console.log('get_all_data now ...')
     this.isTop = true
-    await this.refresh()
+    await this.get_all_data()
     this.$Taro.stopPullDownRefresh()
     this.isTop = false
   },

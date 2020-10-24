@@ -4,7 +4,7 @@ import apiConfig from './apiConfig.js';
 const { BASE_API, promisifyHttp } = apiConfig;
 
 const serverApiMap = {
-  get_all_data: { method: 'POST', url: 'get_all_data' },
+  get_all_data: { method: 'POST', url: 'get_all_data1' },
   get_server_data: { method: 'POST', url: 'get_server_data' },
   get_hardware_data: { method: 'POST', url: 'get_hardware_data' },
   get_computer_room_data: { method: 'POST', url: 'get_computer_room_data' },

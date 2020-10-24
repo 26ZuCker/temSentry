@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import imgExclamation from '../images/exclamation.webp'
+import imgExclamation from '../images/exclamation.png'
 export default {
   inheritAttrs: false,
   components: {},
@@ -75,7 +75,6 @@ export default {
   computed: {
     activeClass () {
       return function (server_id) {
-        //return this.current_server_id === server_id ? 'primary' : 'default'
         return this.current_server_id === server_id ? 'btn-container btn-active' : 'btn-container btn-unvisited'
       }
     },
@@ -89,9 +88,13 @@ export default {
   watch: {
     server_id: {
       handler (n, o) {
-        console.log(this.current_server_id)
         this.current_server_id = n
       }, immediate: true
+    },
+    server_group_id: {
+      handler (n, o) {
+        this.current_server_group_id.push(n)
+      }
     }
   },
   methods: {
@@ -110,9 +113,7 @@ export default {
   },
   //由于初始化即刚进入程序时index页面也是默认显示第一个组的第一个服务器
   created () {
-    console.log(this.server_id)
-    this.current_server_id = this.server_id
-    this.current_server_group_id.push(this.server_group_id)
+
   }
 }
 </script>
@@ -140,6 +141,7 @@ export default {
   background-color: #dededebb;
 }
 .btn-unvisited {
+  border-left: #ffffff 0.5rem solid;
   padding-left: 0.5rem;
 }
 .left-bar-title-container {
@@ -151,6 +153,6 @@ export default {
   height: 5rem;
 }
 .left-bar-item-title {
-  width: 78%;
+  width: 100%;
 }
 </style>

@@ -6,5 +6,6 @@ export default {
     'van-icon': '../../components/vant-weapp/dist/icon/index',
     'van-switch': '../../components/vant-weapp/dist/switch/index',
     'van-stepper': '../../components/vant-weapp/dist/stepper/index',
+    'van-field': '../../components/vant-weapp/dist/field/index',
   },
 };

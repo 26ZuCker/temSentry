@@ -38,7 +38,7 @@ export default {
   },
   usingComponents: {
     'van-button': './components/vant-weapp/dist/button/index',
+    'van-tag': './components/vant-weapp/dist/tag/index',
     'van-cell': './components/vant-weapp/dist/cell/index',
-    'van-cell-group': './components/vant-weapp/dist/cell-group/index',
   },
 };

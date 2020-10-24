@@ -1,0 +1,265 @@
+{
+  "computer_room_data": {
+    "humidity": {
+      "is_alarm": "false",
+      "remarks": "湿度",
+      "value": 52.8,
+      "warning_value": 90
+    },
+    "temp": {
+      "is_alarm": "false",
+      "remarks": "温度",
+      "value": 82,
+      "warning_value": 80
+    }
+  },
+  "server_groups_data": [{
+      "is_alarm": "true",
+      "server_group_id": "d1872a26-65a3-43c7-8b9c-8f0",
+      "server_group_name": "群组1",
+      "server_groups": [{
+        "hardwares": {
+          "cpu_list": [{
+              "id": "ccfcd2084",
+              "inform": "Intel(R) Core(TM) i5-8259U CPU @ 2.30GHz",
+              "is_alarm": "false",
+              "remarks": "",
+              "temp": 99,
+              "warning_temp": 98
+            },
+            {
+              "id": "cc4ca4238",
+              "inform": "Intel(R) Core(TM) i5-8259U CPU @ 2.30GHz",
+              "is_alarm": "false",
+              "remarks": "无",
+              "temp": 24.49,
+              "warning_temp": 98
+            },
+            {
+              "id": "cc81e728d",
+              "inform": "Intel(R) Core(TM) i5-8259U CPU @ 2.30GHz",
+              "is_alarm": "false",
+              "remarks": "无",
+              "temp": 34.57,
+              "warning_temp": 98
+            },
+            {
+              "id": "ceccbc87e",
+              "inform": "Intel(R) Core(TM) i5-8259U CPU @ 2.30GHz",
+              "is_alarm": "false",
+              "remarks": "无",
+              "temp": 84.88,
+              "warning_temp": 98
+            }
+          ],
+          "gpu_list": [{
+              "id": "gcfcd2084",
+              "inform": "Intel Iris Plus Graphics 655 1536 MB",
+              "is_alarm": "false",
+              "remarks": "无",
+              "temp": 20.94,
+              "warning_temp": 98
+            },
+            {
+              "id": "gc4ca4238",
+              "inform": "Intel Iris Plus Graphics 655 1536 MB",
+              "is_alarm": "false",
+              "remarks": "核心gpu",
+              "temp": 21.28,
+              "warning_temp": 98
+            }
+          ]
+        },
+        "is_alarm": "true",
+        "server_id": "8f080d7ef0",
+        "server_name": "服务器1"
+      }]
+    },
+    {
+      "is_alarm": "false",
+      "server_group_id": "d1872a263-43c7-8b9c-8f7e16af",
+      "server_group_name": "群组2",
+      "server_groups": [{
+        "hardwares": {
+          "cpu_list": [{
+              "id": "ccf2084",
+              "inform": "Intel(R) Core(TM) i5-8259U CPU @ 2.30GHz",
+              "is_alarm": "false",
+              "remarks": "",
+              "temp": 94.13,
+              "warning_temp": 80
+            },
+            {
+              "id": "ca4238",
+              "inform": "Intel(R) Core(TM) i5-8259U CPU @ 2.30GHz",
+              "is_alarm": "false",
+              "remarks": "无",
+              "temp": 24.49,
+              "warning_temp": 98
+            },
+            {
+              "id": "c81e728d",
+              "inform": "Intel(R) Core(TM) i5-8259U CPU @ 2.30GHz",
+              "is_alarm": "false",
+              "remarks": "无",
+              "temp": 34.57,
+              "warning_temp": 98
+            },
+            {
+              "id": "cec87e",
+              "inform": "Intel(R) Core(TM) i5-8259U CPU @ 2.30GHz",
+              "is_alarm": "false",
+              "remarks": "无",
+              "temp": 84.88,
+              "warning_temp": 98
+            }
+          ],
+          "gpu_list": [{
+              "id": "gc2084",
+              "inform": "Intel Iris Plus Graphics 655 1536 MB",
+              "is_alarm": "false",
+              "remarks": "无",
+              "temp": 20.94,
+              "warning_temp": 98
+            },
+            {
+              "id": "gc4238",
+              "inform": "Intel Iris Plus Graphics 655 1536 MB",
+              "is_alarm": "false",
+              "remarks": "核心gpu",
+              "temp": 21.28,
+              "warning_temp": 98
+            }
+          ]
+        },
+        "is_alarm": "false",
+        "server_id": "8fd7e16af0",
+        "server_name": "服务器2"
+      }]
+    },
+    {
+      "is_alarm": "false",
+      "server_group_id": "d1872a26-65a3-43c7-8b9caaaaa-8f080d7e16af",
+      "server_group_name": "群组3",
+      "server_groups": [{
+        "hardwares": {
+          "cpu_list": [{
+              "id": "ccfcd2aa084",
+              "inform": "Intel(R) Core(TM) i5-8259U CPU @ 2.30GHz",
+              "is_alarm": "false",
+              "remarks": "",
+              "temp": 94.13,
+              "warning_temp": 98
+            },
+            {
+              "id": "cc4caaa4238",
+              "inform": "Intel(R) Core(TM) i5-8259U CPU @ 2.30GHz",
+              "is_alarm": "false",
+              "remarks": "无",
+              "temp": 24.49,
+              "warning_temp": 98
+            },
+            {
+              "id": "cc81eaa728d",
+              "inform": "Intel(R) Core(TM) i5-8259U CPU @ 2.30GHz",
+              "is_alarm": "false",
+              "remarks": "无",
+              "temp": 34.57,
+              "warning_temp": 98
+            },
+            {
+              "id": "caaaeccbc87e",
+              "inform": "Intel(R) Core(TM) i5-8259U CPU @ 2.30GHz",
+              "is_alarm": "false",
+              "remarks": "无",
+              "temp": 84.88,
+              "warning_temp": 98
+            }
+          ],
+          "gpu_list": [{
+              "id": "gaaacfcd2084",
+              "inform": "Intel Iris Plus Graphics 655 1536 MB",
+              "is_alarm": "false",
+              "remarks": "无",
+              "temp": 20.94,
+              "warning_temp": 98
+            },
+            {
+              "id": "gc4aaca4238",
+              "inform": "Intel Iris Plus Graphics 655 1536 MB",
+              "is_alarm": "false",
+              "remarks": "核心gpu",
+              "temp": 21.28,
+              "warning_temp": 98
+            }
+          ]
+        },
+        "is_alarm": "false",
+        "server_id": "8f080daaaa7e16af0",
+        "server_name": "服务器3"
+      }]
+    },
+    {
+      "is_alarm": "true",
+      "server_group_id": "d1872a2aaa6-65a3-43c7-8b9c-8f080d7e16af",
+      "server_group_name": "群组4",
+      "server_groups": [{
+        "hardwares": {
+          "cpu_list": [{
+              "id": "ccfaaacd208aa4",
+              "inform": "Intel(R) Core(TM) i5-8259U CPU @ 2.30GHz",
+              "is_alarm": "false",
+              "remarks": "",
+              "temp": 94.13,
+              "warning_temp": 10
+            },
+            {
+              "id": "cc4aaca42aa38",
+              "inform": "Intel(R) Core(TM) i5-8259U CPU @ 2.30GHz",
+              "is_alarm": "false",
+              "remarks": "无",
+              "temp": 24.49,
+              "warning_temp": 20
+            },
+            {
+              "id": "ccaa81e7aa28d",
+              "inform": "Intel(R) Core(TM) i5-8259U CPU @ 2.30GHz",
+              "is_alarm": "false",
+              "remarks": "无",
+              "temp": 34.57,
+              "warning_temp": 98
+            },
+            {
+              "id": "aaaacecnncbc87e",
+              "inform": "Intel(R) Core(TM) i5-8259U CPU @ 2.30GHz",
+              "is_alarm": "false",
+              "remarks": "无",
+              "temp": 84.88,
+              "warning_temp": 98
+            }
+          ],
+          "gpu_list": [{
+              "id": "gcfcdnnn2084",
+              "inform": "Intel Iris Plus Graphics 655 1536 MB",
+              "is_alarm": "false",
+              "remarks": "无",
+              "temp": 20.94,
+              "warning_temp": 98
+            },
+            {
+              "id": "gc4cnnna4238",
+              "inform": "Intel Iris Plus Graphics 655 1536 MB",
+              "is_alarm": "false",
+              "remarks": "核心gpu",
+              "temp": 21.28,
+              "warning_temp": 98
+            }
+          ]
+        },
+        "is_alarm": "true",
+        "server_id": "8f08nnn0d7e16af0",
+        "server_name": "服务器4"
+      }]
+    }
+  ]
+}
