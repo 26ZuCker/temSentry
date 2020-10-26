@@ -28,7 +28,7 @@
         <slot-view name="title">
           <van-icon :name="imgMore" size="1.5rem" @tap="showLeftBar" />
         </slot-view>
-        <view class="index-server-title">{{server.server_name}}</view>
+        <view class="index-server-title">{{ server.server_name }}</view>
       </van-cell>
     </van-sticky>
     <!-- 工作室状态 -->
@@ -41,10 +41,10 @@
         <van-cell-group v-for="data in computer_room_dataArr" :key="data.name">
           <van-cell>
             <van-progress
-              :pivot-text="roomText(data.name,data.value)"
-              :color="stateColor(data.value,data.warning_value)"
+              :pivot-text="roomText(data.name, data.value)"
+              :color="stateColor(data.value, data.warning_value)"
               custom-class="progress-position"
-              :percentage="percent(data.value,data.warning_value)"
+              :percentage="percent(data.value, data.warning_value)"
             />
           </van-cell>
         </van-cell-group>
@@ -74,7 +74,7 @@ import imgMore from '../../images/more.png'
 //获取定时任务配置
 import scheduleConfig from '../../utils/schedule.js'
 //获取api
-import { get_all_data, get_computer_room_data, get_hardware_data, get_server_data } from '@/apis/serverApi.js'
+import { get_all_data, get_computer_room_data, get_hardware_data, get_server_data } from '@/apis/server.js'
 
 //由于左侧边栏载入数据量过大则采用taro的预渲染该组件
 //import LeftBar from '../../components/LeftBar'
@@ -114,7 +114,7 @@ export default {
   methods: {
     onClose () {
       this.isShowLeftBar = false
-      this.$Taro.showTabBar({ animation: true })
+      this.$taro.showTabBar({ animation: true })
     },
     async get_all_data () {
       //初始化直接获取所有服务器组的信息，注意此时只包括id
@@ -151,7 +151,7 @@ export default {
     },
     showLeftBar () {
       this.isShowLeftBar = !this.isShowLeftBar
-      this.$Taro.hideTabBar({ animation: true })
+      this.$taro.hideTabBar({ animation: true })
     },
     showDetail (e) {
       this.isShowDetail = e.detail
@@ -245,7 +245,7 @@ export default {
     this.$once('hook:beforeDestroy', () => {
       clearInterval(this.timer)
     })
-    /* this.$Taro.nextTick(() => {
+    /* this.$taro.nextTick(() => {
       this.isMounted = false
     }) */
   },
@@ -257,7 +257,7 @@ export default {
     console.log('get_all_data now ...')
     this.isTop = true
     await this.get_all_data()
-    this.$Taro.stopPullDownRefresh()
+    this.$taro.stopPullDownRefresh()
     this.isTop = false
   },
   //监听下拉触底事件，获取更多数据

@@ -31,9 +31,14 @@
         >
           <text
             class="left-bar-item-title"
-            @tap="chooseServer(server.server_id,server_group.server_group_id)"
-          >{{server.server_name}}</text>
-          <van-icon :name="imgExclamation" color="orange" v-if="toBool(server.is_alarm)" />
+            @tap="chooseServer(server.server_id, server_group.server_group_id)"
+            >{{ server.server_name }}</text
+          >
+          <van-icon
+            :name="imgExclamation"
+            color="orange"
+            v-if="toBool(server.is_alarm)"
+          />
         </view>
         <slot-view name="value">
           <van-icon
@@ -108,7 +113,7 @@ export default {
       this.$emit('onChooseServer', res)
     },
     toCus () {
-      this.$Taro.navigateTo({ url: '../cusHardw/cusHardw' })
+      this.$taro.navigateTo({ url: '../cusHardw/cusHardw' })
     },
   },
   //由于初始化即刚进入程序时index页面也是默认显示第一个组的第一个服务器

@@ -10,15 +10,17 @@ Vue.use(VirtualList); */
 /* import getRouteParams from './utils/getRouteParams';
 Vue.prototype.$getRouteParams = getRouteParams; */
 
-Vue.prototype.$Taro = Taro;
+Vue.prototype.$taro = Taro;
 
 //import './app.scss';
 
 const App = new Vue({
   store,
-  mounted() {
+  async mounted() {
     if (process.env.TARO_ENV === 'weapp') {
       Taro.cloud.init();
+      //进入小程序先获取openid并根据是否已存入数据库判断是否仍需要登录或填写该问卷
+      await store.dispatch('user/getOpenId');
     }
   },
   onShow(options) {},

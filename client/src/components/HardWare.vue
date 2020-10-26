@@ -7,21 +7,23 @@
     </view>
     <van-cell @tap="toCusHardW(hardware.id)" v-else>
       <slot-view name="title" class="hardware-title">
-        <view class="van-cell-text">{{hardware.inform}}</view>
+        <view class="van-cell-text">{{ hardware.inform }}</view>
         <van-tag
           mark
-          :color="thresholdColor(hardware.temp,hardware.warning_temp)"
+          :color="thresholdColor(hardware.temp, hardware.warning_temp)"
           size="medium"
           class="hardware-title-tag"
-        >{{hardware.temp}}/{{hardware.warning_temp}}</van-tag>
+          >{{ hardware.temp }}/{{ hardware.warning_temp }}</van-tag
+        >
       </slot-view>
-      <slot-view name="label">{{hardware.remark}}</slot-view>
+      <slot-view name="label">{{ hardware.remark }}</slot-view>
       <van-circle
         stroke-width="6"
-        :value="percent(hardware.temp,hardware.warning_temp)"
+        :value="percent(hardware.temp, hardware.warning_temp)"
         layer-color="#eeeeee"
-        :color="thresholdColor(hardware.temp,hardware.warning_temp)"
-      >{{percent(hardware.temp,hardware.warning_temp)}} %</van-circle>
+        :color="thresholdColor(hardware.temp, hardware.warning_temp)"
+        >{{ percent(hardware.temp, hardware.warning_temp) }} %</van-circle
+      >
     </van-cell>
   </view>
 </template>
@@ -46,7 +48,7 @@ export default {
       //this.isLoading = true
       const that = this
       //后续改用vuex以避免总是页面传参
-      this.$Taro.navigateTo({
+      this.$taro.navigateTo({
         url: `../cusHardw/cusHardw?server_group_id=${this.server_group_id}&server_id=${this.server_id}&hardware_id=${this.hardware.id}`,
         /*         events: {
                   // 为指定事件添加一个监听器，获取被打开页面传送到当前页面的数据

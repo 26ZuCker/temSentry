@@ -14,6 +14,14 @@ export default {
       root: 'pages/cusHardw',
       pages: ['cusHardw'],
     },
+    {
+      root: 'pages/register',
+      pages: ['register'],
+    },
+    {
+      root: 'pages/record',
+      pages: ['record'],
+    },
   ],
   //后续实现自定义底部tabbar
   tabBar: {

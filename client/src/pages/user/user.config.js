@@ -9,5 +9,6 @@ export default {
     'van-search': '../../components/vant-weapp/dist/search/index',
     'van-icon': '../../components/vant-weapp/dist/icon/index',
     'van-button': '../../components/vant-weapp/dist/button/index',
+    'van-field': '../../components/vant-weapp/dist/field/index',
   },
 };

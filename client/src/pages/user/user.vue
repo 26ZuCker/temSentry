@@ -18,6 +18,8 @@
     <view class="user-bottom-btn-container">
       <van-icon name="setting-o" size="2rem" color="green" />
     </view>-->
+    <van-button round type="info" @click="toRegister">填报</van-button>
+    <van-button round type="info" @click="toRecord">查看</van-button>
   </view>
 </template>
 
@@ -33,10 +35,16 @@ export default {
     toolList: [],
     defaultSrc: '../../images/user-active.png',
     userInfo: null,
+    username: ''
   }),
   props: {},
   methods: {
-
+    toRegister () {
+      this.$taro.navigateTo({ url: '../register/register' })
+    },
+    toRecord () {
+      this.$taro.navigateTo({ url: '../record/record' })
+    }
   },
   computed: {},
   watch: {},
@@ -65,7 +73,6 @@ page {
 }
 .user-container {
   @include wd();
-  align-items: center;
   height: 100%;
 }
 .user-main {

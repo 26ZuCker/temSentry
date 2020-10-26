@@ -15,12 +15,18 @@ function getUserOpenId() {
           },
           success: function(opt) {
             const { result, data } = opt.data;
-            if (result == 1) {
-              store.dispatch('setOpenId', data.openid);
+            if (result === 1) {
+              store.dispatch('user/setOpenId', data.openid);
               resolve(data.openid);
             }
           },
+          fail: function(error) {
+            console.log(error);
+          },
         });
+      },
+      fail: function(error) {
+        console.log(error);
       },
     });
   });

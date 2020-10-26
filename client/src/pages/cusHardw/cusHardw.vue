@@ -3,7 +3,7 @@
     <!-- 点击提交后的顶部通知 -->
     <van-notify id="van-notify" />
     <!-- 标题 -->
-    <view class="cus-title">{{hardware.inform}}</view>
+    <view class="cus-title">{{ hardware.inform }}</view>
     <!-- 硬件类别，若进入则改为可选 -->
     <!-- <van-cell title="类别">
       <van-dropdown-menu>
@@ -17,7 +17,7 @@
     </van-cell>
     <!-- 是否接收通知 -->
     <van-cell title="接收通知">
-      <van-switch :checked="isGetNotice" @change="isGetNotice=!isGetNotice" />
+      <van-switch :checked="isGetNotice" @change="isGetNotice = !isGetNotice" />
     </van-cell>
     <!-- 备注 -->
     <van-field :value="remarks" label="备注" placeholder="备注" autosize />
@@ -31,15 +31,18 @@
         :loading="isSubmit"
         loading-type="spinner"
         size="large"
-      >确认</van-button>
-      <van-button type="default" plain hairline @tap="toBack" size="large">取消</van-button>
+        >确认</van-button
+      >
+      <van-button type="default" plain hairline @tap="toBack" size="large"
+        >取消</van-button
+      >
     </view>
   </van-cell-group>
 </template>
 
 <script>
 import Notify from '../../components/vant-weapp/dist/notify/notify.js'
-import { get_hardware_data, save_hardware_data } from '../../apis/serverApi.js'
+import { get_hardware_data, save_hardware_data } from '../../apis/server.js'
 
 export default {
   inheritAttrs: false,
@@ -115,7 +118,7 @@ export default {
     },
     toBack () {
       const url = `../${this.fromPath}/${this.fromPath}`
-      this.$Taro.switchTab({
+      this.$taro.switchTab({
         url: url
       })
     }
