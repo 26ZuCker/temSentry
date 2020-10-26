@@ -9,17 +9,21 @@
         class="user-title-avatar"
       />username
     </view>
-    <!--     <view class="user-tool-grid-container">
-      <van-grid square column-num="4">
-        <van-grid-item :icon="i.icon" :text="i.text" v-for="i in toolList" :key="i.id" />
+    <view class="user-tool-grid-container">
+      <van-grid square column-num="2">
+        <van-grid-item
+          :icon="i.icon"
+          :text="i.text"
+          v-for="i in toolList"
+          :key="i.id"
+          :url="`/pages/${i.route}/${i.route}`"
+        ></van-grid-item>
       </van-grid>
     </view>
-    
+
     <view class="user-bottom-btn-container">
       <van-icon name="setting-o" size="2rem" color="green" />
-    </view>-->
-    <van-button round type="info" @click="toRegister">填报</van-button>
-    <van-button round type="info" @click="toRecord">查看</van-button>
+    </view>
   </view>
 </template>
 
@@ -39,12 +43,6 @@ export default {
   }),
   props: {},
   methods: {
-    toRegister () {
-      this.$taro.navigateTo({ url: '../register/register' })
-    },
-    toRecord () {
-      this.$taro.navigateTo({ url: '../record/record' })
-    }
   },
   computed: {},
   watch: {},
@@ -52,10 +50,8 @@ export default {
     //后续改用mapActions内的统一管理
     //this.userInfo = {}
     this.toolList = [
-      { id: 1, icon: 'like', text: 'tool' },
-      { id: 2, icon: 'like', text: 'tool' },
-      { id: 3, icon: 'like', text: 'tool' },
-      { id: 4, icon: 'like', text: 'tool' },
+      { id: 1, icon: 'orders-o', text: '填报申请', route: 'register' },
+      { id: 2, icon: 'todo-list-o', text: '访问记录', route: 'record' },
     ]
   }
 }

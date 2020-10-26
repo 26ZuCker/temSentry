@@ -16,11 +16,20 @@ Vue.prototype.$taro = Taro;
 
 const App = new Vue({
   store,
-  async mounted() {
+  async created() {
     if (process.env.TARO_ENV === 'weapp') {
       Taro.cloud.init();
       //进入小程序先获取openid并根据是否已存入数据库判断是否仍需要登录或填写该问卷
-      await store.dispatch('user/getOpenId');
+      try {
+        if (!(await Taro.getStorage('openid'))) {
+          await store.dispatch('user/getOpenid');
+        }
+        await store.dispatch('user/login');
+      } catch (error) {
+        Taro.onError(() => {
+          console.log(error);
+        });
+      }
     }
   },
   onShow(options) {},

@@ -1,5 +1,7 @@
 import Taro from '@tarojs/taro';
-import { login, logout } from '@/apis/user.js';
+
+import { get_userInfo, logout } from '@/apis/user.js';
+
 const state = {
   openid: '',
   userInfo: {},
@@ -19,58 +21,67 @@ const mutations = {
   },
 };
 const actions = {
-  //获取openid
-  async getOpenId({ commit }) {
+  /**
+   * 获取openid
+   */
+  async getOpenid({ commit }) {
     try {
       const { errMsg, result } = await Taro.cloud.callFunction({ name: 'login' });
       if (errMsg === 'cloud.callFunction:ok') {
         commit('set_openid', result.openid);
-        Promise.resolve(result);
+        await Taro.setStorage('openid', result.openid);
+        return Promise.resolve(result);
       } else {
-        Promise.reject(errMsg);
+        return Promise.reject(errMsg);
       }
     } catch (error) {
-      Promise.reject(error);
+      return Promise.reject(error);
     }
   },
-  //登录
+  /**
+   * 小程序端的登录本质只是根据openid向后端请求个人信息
+   * 根据code即自定义状态码确定该openid是否已
+   */
   async login({ commit, state, dispatch }) {
     if (state.openid !== '') {
       try {
-        const { code, data } = (await login()).data;
+        const query = { openid: state.openid };
+        const { code, data } = (await get_userInfo(query)).data;
         if (code !== -1) {
-          commit('set_userInfo', data.userInfo);
-          Promise.resolve(data);
+          if (code === 101) {
+            commit('set_userInfo', { has_register: false });
+          } else if (code === 102) {
+            commit('set_userInfo', data.userInfo);
+            return Promise.resolve(data);
+          } else {
+            return Promise.reject('错误');
+          }
         } else {
           //从后台获取对应自定义响应码的文字描述
-          Promise.reject();
+          return Promise.reject('错误');
         }
       } catch (error) {
-        Promise.reject(error);
+        return Promise.reject(error);
       }
     } else {
       dispatch('getOpenId');
     }
   },
-  //登出
+  /**
+   * 小程序端的登出本质只是清空本地缓存
+   */
   async logout({ commit }) {
-    try {
-      const { code, data } = await logout();
-      if (code !== -1) {
-        commit('reset_openid');
-        commit('reset_userInfo');
-        Promise.resolve();
-      } else {
-        Promise.reject();
-      }
-    } catch (error) {
-      Promise.reject(error);
-    }
+    commit('reset_openid');
+    commit('reset_userInfo');
+    await Taro.removeStorage('openid');
   },
 };
 const getters = {
-  isLogin({ state }) {
-    return state.openid.length !== 0;
+  /**
+   * 由于是判断函数则必须同步
+   */
+  isLogin(state) {
+    return state.has_register;
   },
 };
 export default {

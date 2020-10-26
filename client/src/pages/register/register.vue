@@ -45,9 +45,6 @@ import { mapGetters } from 'vuex';
 export default {
   inheritAttrs: false,
   name: '',
-  components: {
-
-  },
   data: () => ({
     username: ''
   }),

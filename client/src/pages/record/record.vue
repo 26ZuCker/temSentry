@@ -2,19 +2,21 @@
   <!-- 后续拆分组件 -->
   <view>
     <!-- 点击展示 -->
-    <van-cell :title="recordTitle" :value="current_record_num">
-      <van-icon
-        name="calendar-o"
-        slot="right-icon"
-        class="custom-icon"
-        @click="isShowPopup = true"
-      />
+    <van-cell
+      :title="recordTitle"
+      value="0"
+      link
+      @tap="isShowPopup = true"
+      is-link
+      arrow-direction="down"
+      :clickable="true"
+    >
+      <van-icon name="calendar-o" slot="right-icon" class="custom-icon" />
     </van-cell>
     <van-popup
+      content-class="van-popup__content"
       :show="isShowPopup"
-      closeable
       round
-      close-icon="close"
       position="bottom"
       custom-style="height: 30%"
       @close="isShowPopup = false"
@@ -129,10 +131,13 @@ export default {
       //建议弹出提示框
       this.$taro.navigateTo({ url: '../user/user' })
     }
-
   }
 }
 </script>
 
 <style lang='scss' scoped>
+.van-popup__content {
+  border-top-left-radius: 25% !important;
+  border-top-right-radius: 25% !important;
+}
 </style>

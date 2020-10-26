@@ -10,5 +10,7 @@ export default {
     'van-icon': '../../components/vant-weapp/dist/icon/index',
     'van-button': '../../components/vant-weapp/dist/button/index',
     'van-field': '../../components/vant-weapp/dist/field/index',
+    'van-grid': '../../components/vant-weapp/dist/grid/index',
+    'van-grid-item': '../../components/vant-weapp/dist/grid-item/index',
   },
 };
