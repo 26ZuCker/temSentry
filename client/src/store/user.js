@@ -1,4 +1,4 @@
-import Taro from '@tarojs/taro';
+import Taro, { getSetting, getUserInfo } from '@tarojs/taro';
 
 import { get_userInfo, logout } from '@/apis/user.js';
 
@@ -39,6 +39,37 @@ const actions = {
     }
   },
   /**
+   * 获取用户信息
+   */
+  async getUser({ commit }) {
+    try {
+      Taro.getSetting({
+        success(res) {
+          if (res.authSetting['scope.userInfo']) {
+            // 已经授权，可以直接调用 getUserInfo 获取头像昵称
+            Taro.getUserInfo({
+              success: function(res) {
+                console.log(res.userInfo);
+              },
+            });
+          }
+        },
+      });
+      /*       getSetting({
+        success(res) {
+          if (res.authSetting['scope.userInfo']) {
+            // 已经授权，可以直接调用 getUserInfo 获取头像昵称
+            const { userInfo } = getUserInfo();
+            commit('set_userInfo', userInfo);
+            return Promise.resolve(res);
+          }
+        },
+      }); */
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  },
+  /**
    * 小程序端的登录本质只是根据openid向后端请求个人信息
    * 根据code即自定义状态码确定该openid是否已
    */
@@ -64,7 +95,7 @@ const actions = {
         return Promise.reject(error);
       }
     } else {
-      dispatch('getOpenId');
+      dispatch('getOpenid');
     }
   },
   /**

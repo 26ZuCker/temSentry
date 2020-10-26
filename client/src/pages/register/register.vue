@@ -1,39 +1,32 @@
 <template>
   <view class="register-container">
     <van-field
-      :value="username"
+      :value="name"
       required
       clearable
-      label="用户名"
-      placeholder="请输入用户名"
+      label="姓名"
+      placeholder="请输入姓名"
     />
     <van-field
-      :value="username"
+      :value="student_id"
       required
       clearable
-      label="用户名"
-      placeholder="请输入用户名"
+      label="学号"
+      placeholder="请输入学号"
     />
     <van-field
-      :value="username"
+      :value="gender"
       required
       clearable
-      label="用户名"
-      placeholder="请输入用户名"
+      label="性别"
+      placeholder="请输入性别"
     />
     <van-field
-      :value="username"
+      :value="reason"
       required
       clearable
-      label="用户名"
-      placeholder="请输入用户名"
-    />
-    <van-field
-      :value="username"
-      required
-      clearable
-      label="用户名"
-      placeholder="请输入用户名"
+      label="来访原因"
+      placeholder="请输入来访原因"
     />
     <!--  -->
     <button @tap="submitRegister" class="my-round">{{ submitText }}</button>
@@ -46,31 +39,25 @@ export default {
   inheritAttrs: false,
   name: '',
   data: () => ({
-    username: ''
+    name: '',
+    student_id: '',
+    gender: '',
+    reason: ''
   }),
   props: {},
   methods: {
     submitRegister () {
-      if (this.isLogin) {
-        //已填报则重新填写
-      } else {
-        //未填报则直接提交
-      }
+
     }
   },
   computed: {
     submitText () {
-      return this.isLogin ? '你已填写过信息，需要重新填写？' : '提交信息'
+      return this.isLogin ? '你已填写过信息，重新提交' : '提交信息'
     },
     ...mapGetters({
       isLogin: 'user/isLogin'
     })
   },
-  watch: {},
-  //检测该openid是否已提交过
-  async created () {
-
-  }
 }
 </script>
 

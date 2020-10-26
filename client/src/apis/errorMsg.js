@@ -4,9 +4,9 @@ import apiConfig from './apiConfig.js';
 const { BASE_API, promisifyHttp } = apiConfig;
 
 const errorMsgApiMap = {
-  post_register: { method: 'POST', url: 'post_register' },
+  get_error_msg: { method: 'POST', url: 'get_error_msg' },
 };
 
-const post_register = promisifyHttp(Taro, BASE_API, errorMsgApiMap['post_register']);
+const get_error_msg = promisifyHttp(Taro, BASE_API, errorMsgApiMap['get_error_msg']);
 
-export { post_register };
+export { get_error_msg };

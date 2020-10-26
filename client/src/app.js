@@ -21,8 +21,10 @@ const App = new Vue({
       Taro.cloud.init();
       //进入小程序先获取openid并根据是否已存入数据库判断是否仍需要登录或填写该问卷
       try {
-        if (!(await Taro.getStorage('openid'))) {
-          await store.dispatch('user/getOpenid');
+        const { data, errMsg } = await Taro.getStorage({ key: 'openid' });
+        if (errMsg === 'getStorage:fail data not found') {
+          const res = await Promise.all([store.dispatch('user/getOpenid'), store.dispatch('user/getUser')]);
+          console.log(res);
         }
         await store.dispatch('user/login');
       } catch (error) {

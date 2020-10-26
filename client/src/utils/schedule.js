@@ -1,5 +1,5 @@
 const scheduleConfig = {
-  period: 4000,
+  period: 9999000, //4000
 };
 /**
  * 定时任务配置
