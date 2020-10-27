@@ -9,50 +9,55 @@
         class="user-title-avatar"
       />username
     </view>
-    <view class="user-tool-grid-container">
-      <van-grid square column-num="2">
-        <van-grid-item
-          :icon="i.icon"
-          :text="i.text"
-          v-for="i in toolList"
-          :key="i.id"
-          :url="`/pages/${i.route}/${i.route}`"
-        ></van-grid-item>
-      </van-grid>
-    </view>
 
     <view class="user-bottom-btn-container">
-      <van-icon name="setting-o" size="2rem" color="green" />
+      <!-- 默认进入小程序即要获取信息和登录，所以不存在登出逻辑 -->
+      <button type="primary" v-if="!isLogin" @tap="login">登陆</button>
+      <template v-else @tap="toRecord">
+        <van-icon name="todo-list-o" size="2rem" color="green" />
+        <view style="color: green">访问记录</view>
+        <button type="warning" @tap="log">登出</button>
+      </template>
     </view>
   </view>
 </template>
 
 <script>
-
+import { mapGetters, mapActions, mapState } from 'vuex'
 export default {
   inheritAttrs: false,
   name: '',
-  components: {
-
-  },
   data: () => ({
-    toolList: [],
+    //toolList: [],
     defaultSrc: '../../images/user-active.png',
-    userInfo: null,
     username: ''
   }),
   props: {},
   methods: {
+    toRecord () {
+      this.$taro.navigateTo({ url: '../record/record' })
+    },
+    ...mapActions({
+      login: 'user/login',
+      logout: 'user/logout',
+    })
   },
-  computed: {},
+  computed: {
+    ...mapState({
+      userInfo: (state) => state.user.userInfo
+    }),
+    ...mapGetters({
+      isLogin: 'user/isLogin'
+    })
+  },
   watch: {},
   async created () {
     //后续改用mapActions内的统一管理
     //this.userInfo = {}
-    this.toolList = [
-      { id: 1, icon: 'orders-o', text: '填报申请', route: 'register' },
-      { id: 2, icon: 'todo-list-o', text: '访问记录', route: 'record' },
-    ]
+    /*   this.toolList = [
+        { id: 1, icon: 'orders-o', text: '填报申请', route: 'register' },
+        { id: 2, icon: 'todo-list-o', text: '访问记录', route: 'record' },
+      ] */
   }
 }
 </script>
@@ -79,6 +84,7 @@ page {
 }
 .user-bottom-btn-container {
   @include wd();
+  margin: 1rem 1rem 1rem 1rem;
 }
 .user-tool-grid-container {
   width: 100%;

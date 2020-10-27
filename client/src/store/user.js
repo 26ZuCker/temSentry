@@ -4,7 +4,7 @@ import { get_userInfo, logout } from '@/apis/user.js';
 
 const state = {
   openid: '',
-  userInfo: {},
+  userInfo: null,
 };
 const mutations = {
   set_openid(state, openid) {
@@ -17,7 +17,7 @@ const mutations = {
     state.userInfo = userInfo;
   },
   reset_userInfo(state) {
-    state.userInfo = {};
+    state.userInfo = null;
   },
 };
 const actions = {
@@ -29,7 +29,8 @@ const actions = {
       const { errMsg, result } = await Taro.cloud.callFunction({ name: 'login' });
       if (errMsg === 'cloud.callFunction:ok') {
         commit('set_openid', result.openid);
-        await Taro.setStorage('openid', result.openid);
+        //由于会同时登陆过好几个用户，则先获取用户信息
+        await Taro.setStorage({ key: 'openid', data: result.openid });
         return Promise.resolve(result);
       } else {
         return Promise.reject(errMsg);
@@ -43,28 +44,20 @@ const actions = {
    */
   async getUser({ commit }) {
     try {
-      Taro.getSetting({
-        success(res) {
+      await Taro.getSetting({
+        async success(res) {
           if (res.authSetting['scope.userInfo']) {
             // 已经授权，可以直接调用 getUserInfo 获取头像昵称
-            Taro.getUserInfo({
+            await Taro.getUserInfo({
               success: function(res) {
-                console.log(res.userInfo);
+                console.log(res);
+                commit('set_userInfo', res.userInfo);
+                return Promise.resolve(res.userInfo);
               },
             });
           }
         },
       });
-      /*       getSetting({
-        success(res) {
-          if (res.authSetting['scope.userInfo']) {
-            // 已经授权，可以直接调用 getUserInfo 获取头像昵称
-            const { userInfo } = getUserInfo();
-            commit('set_userInfo', userInfo);
-            return Promise.resolve(res);
-          }
-        },
-      }); */
     } catch (error) {
       return Promise.reject(error);
     }
@@ -96,6 +89,7 @@ const actions = {
       }
     } else {
       dispatch('getOpenid');
+      this.login();
     }
   },
   /**
@@ -112,7 +106,7 @@ const getters = {
    * 由于是判断函数则必须同步
    */
   isLogin(state) {
-    return state.has_register;
+    return state.userInfo !== null;
   },
 };
 export default {

@@ -16,22 +16,28 @@ Vue.prototype.$taro = Taro;
 
 const App = new Vue({
   store,
+  /**
+   * 进入小程序优先获取
+   */
   async created() {
     if (process.env.TARO_ENV === 'weapp') {
       Taro.cloud.init();
-      //进入小程序先获取openid并根据是否已存入数据库判断是否仍需要登录或填写该问卷
-      try {
-        const { data, errMsg } = await Taro.getStorage({ key: 'openid' });
-        if (errMsg === 'getStorage:fail data not found') {
-          const res = await Promise.all([store.dispatch('user/getOpenid'), store.dispatch('user/getUser')]);
-          console.log(res);
-        }
-        await store.dispatch('user/login');
-      } catch (error) {
-        Taro.onError(() => {
-          console.log(error);
-        });
-      }
+      /* 
+      await Taro.getStorage({
+        key: 'openid',
+        success: async function(res) {
+          await store.dispatch('user/login');
+        },
+        fail: async function(error) {
+          if (error === 'getStorage:fail data not found') {
+            const [res1, res2] = await Promise.all([store.dispatch('user/getOpenid'), store.dispatch('user/getUser')]);
+            console.log(res1);
+            console.log(res2);
+          } else {
+            console.log(error);
+          }
+        },
+      }); */
     }
   },
   onShow(options) {},

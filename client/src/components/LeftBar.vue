@@ -11,45 +11,32 @@
       />username
       <van-search :value="searchInput" placeholder="服务器名称" shape="round" />
     </view>
-    <!-- 此处的value绑定为数组，其中的值为item的name -->
-    <van-collapse
-      :value="current_server_group_id"
-      @change="changeServerGroupId"
-      v-for="server_group in server_groups_data"
-      :key="server_group.server_group_id"
-    >
-      <!-- 在不采用vuex的前提下假如再细分item为子组件则需要隔一代传值给父即index而且由于样式的改变无法采用函数式组件则此处是否再细分组件有待商榷 -->
-      <van-collapse-item
-        :title="server_group.server_group_name"
-        :name="server_group.server_group_id"
-        content-class="van-collapse-item__content"
+    <view class="server-item">
+      <view
+        v-for="server in server_group.server_groups"
+        :key="server.server_id"
+        :class="activeClass(server.server_id)"
       >
-        <view
-          v-for="server in server_group.server_groups"
-          :key="server.server_id"
-          :class="activeClass(server.server_id)"
+        <text
+          class="left-bar-item-title"
+          @tap="chooseServer(server.server_id, server_group.server_group_id)"
+          >{{ server.server_name }}</text
         >
-          <text
-            class="left-bar-item-title"
-            @tap="chooseServer(server.server_id, server_group.server_group_id)"
-            >{{ server.server_name }}</text
-          >
-          <van-icon
-            :name="imgExclamation"
-            color="orange"
-            v-if="toBool(server.is_alarm)"
-          />
-        </view>
-        <slot-view name="value">
-          <van-icon
-            :name="imgExclamation"
-            color="orange"
-            size="1.5rem"
-            v-if="toBool(server_group.is_alarm)"
-          />
-        </slot-view>
-      </van-collapse-item>
-    </van-collapse>
+        <van-icon
+          :name="imgExclamation"
+          color="orange"
+          v-if="toBool(server.is_alarm)"
+        />
+      </view>
+
+      <van-icon
+        :name="imgExclamation"
+        color="orange"
+        size="1.5rem"
+        v-if="toBool(server_group.is_alarm)"
+      />
+    </view>
+
     <!-- 底部额外增加需要监控的服务器 -->
     <!--     <view class="left-bar-btn-container">
       <van-icon name="add-o" size="2rem" color="green" @tap="toCus" />
@@ -112,9 +99,9 @@ export default {
       const res = { server_id, server_group_id }
       this.$emit('onChooseServer', res)
     },
-    toCus () {
+    /* toCus () {
       this.$taro.navigateTo({ url: '../cusHardw/cusHardw' })
-    },
+    }, */
   },
   //由于初始化即刚进入程序时index页面也是默认显示第一个组的第一个服务器
   created () {
@@ -159,5 +146,8 @@ export default {
 }
 .left-bar-item-title {
   width: 100%;
+}
+.server-item {
+  @include wd(row, flex-start);
 }
 </style>

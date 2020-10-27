@@ -15,10 +15,6 @@ export default {
       pages: ['cusHardw'],
     },
     {
-      root: 'pages/register',
-      pages: ['register'],
-    },
-    {
       root: 'pages/record',
       pages: ['record'],
     },
@@ -44,9 +40,9 @@ export default {
     backgroundColor: '#fff',
     borderStyle: 'white',
   },
-  usingComponents: {
+  /*   usingComponents: {
     'van-button': './components/vant-weapp/dist/button/index',
     'van-tag': './components/vant-weapp/dist/tag/index',
     'van-cell': './components/vant-weapp/dist/cell/index',
-  },
+  }, */
 };
