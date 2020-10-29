@@ -86,7 +86,6 @@ export default {
       this.notifyMsg('数据提交中', 'warning')
       this.isSubmit = true
       const params = {
-        server_group_id: this.server_group_id,
         server_id: this.server_id,
         hardware_id: this.hardware.id,
         remarks: this.remarks,
@@ -127,12 +126,10 @@ export default {
   watch: {},
   //taro可以在onload生命周期内解构参数options或通过getCurrentPages获取页面传参，推荐在onLoad内即可因为接近原生
   async onLoad (options) {
-    this.server_group_id = options.server_group_id
     this.server_id = options.server_id
     const hardware_id = options.hardware_id
     try {
       this.hardware = (await get_hardware_data({
-        server_group_id: this.server_group_id,
         server_id: this.server_id,
         hardware_id: hardware_id
       })).data

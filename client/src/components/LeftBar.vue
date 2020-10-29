@@ -11,15 +11,16 @@
       />username
       <van-search :value="searchInput" placeholder="服务器名称" shape="round" />
     </view>
+
     <view class="server-item">
       <view
-        v-for="server in server_group.server_groups"
+        v-for="server in server_list"
         :key="server.server_id"
         :class="activeClass(server.server_id)"
       >
         <text
           class="left-bar-item-title"
-          @tap="chooseServer(server.server_id, server_group.server_group_id)"
+          @tap="chooseServer(server.server_id)"
           >{{ server.server_name }}</text
         >
         <van-icon
@@ -29,12 +30,12 @@
         />
       </view>
 
-      <van-icon
+      <!--       <van-icon
         :name="imgExclamation"
         color="orange"
         size="1.5rem"
         v-if="toBool(server_group.is_alarm)"
-      />
+      /> -->
     </view>
 
     <!-- 底部额外增加需要监控的服务器 -->
@@ -52,7 +53,6 @@ export default {
   data: () => ({
     //当前选中的服务器和服务器组id
     current_server_id: '',
-    current_server_group_id: [],
     searchInput: '',
     //额外维护一个需要预警的服务器id数组而无需总是使用computed
     hasProblem: [],
@@ -60,8 +60,6 @@ export default {
   }),
   props: {
     //后续需要优化不需要传递完整的服务器组
-    server_groups_data: { type: Array, default: null },
-    server_group_id: { type: String, default: null },
     server_id: { type: String, default: null },
   },
   computed: {
@@ -83,21 +81,13 @@ export default {
         this.current_server_id = n
       }, immediate: true
     },
-    server_group_id: {
-      handler (n, o) {
-        this.current_server_group_id.push(n)
-      }
-    }
+
   },
   methods: {
-    changeServerGroupId (e) {
-      this.current_server_group_id = e.detail
-    },
     //通知父组件更改显示
-    chooseServer (server_id, server_group_id) {
+    chooseServer (server_id) {
       this.current_server_id = server_id
-      const res = { server_id, server_group_id }
-      this.$emit('onChooseServer', res)
+      this.$emit('onChooseServer', server_id)
     },
     /* toCus () {
       this.$taro.navigateTo({ url: '../cusHardw/cusHardw' })

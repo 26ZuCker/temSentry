@@ -71,6 +71,11 @@ import { debounce } from '@/utils/HO'
 
 const today_date = new Date().getTime()
 
+/**
+ * 非响应式数据则不必存在于data内
+ */
+const all_get_record = new Map()
+
 export default {
   inheritAttrs: false,
   name: 'record',
@@ -81,7 +86,7 @@ export default {
     activeNames: ['1'],
     isShowPopup: false,
     //hash缓存以避免重复请求
-    all_get_record: null,
+    //all_get_record: null,
     current_record: [],
     formatter (type, value) {
       if (type === 'year') {
@@ -107,15 +112,15 @@ export default {
     },
     //已访问则缓存在hash，否则才发送http请求，后续建议维护LRU
     async getDayRecord () {
-      if (this.all_get_record.has(this.current_date)) {
-        this.current_record = this.all_get_record.get(this.current_date)
+      if (all_get_record.has(this.current_date)) {
+        this.current_record = all_get_record.get(this.current_date)
       } else {
         try {
           const { code, data } = (await get_day_record()).data
           if (code !== -1) {
             const res = Object.freeze(data)
             this.current_record = res
-            this.all_get_record.set(this.current_date, res)
+            all_get_record.set(this.current_date, res)
           }
         } catch (error) {
           console.log(error)
@@ -128,9 +133,7 @@ export default {
   },
   computed: {
     recordTitle () {
-      console.log(this.current_date)
-      console.log(today_date)
-      return this.current_date === today_date ? '今天' : this.format_time(this.current_date)
+      return new Date(this.current_date).getDate() === new Date(today_date).getDate() ? '今天' : this.format_time(this.current_date)
     },
     today_date () {
       return today_date
@@ -139,20 +142,15 @@ export default {
     current_record_num () {
       return isArray(this.current_record) ? this.current_record.length : 0
     },
-    //格式化时间戳
+    //格式化时间戳格式为yyyy-mm-dd
     format_time () {
       return function (inputTime) {
         const date = new Date(inputTime);
-        let y = date.getFullYear();
         let m = date.getMonth() + 1;
         m = m < 10 ? ('0' + m) : m;
         let d = date.getDate();
         d = d < 10 ? ('0' + d) : d;
-        let h = date.getHours();
-        h = h < 10 ? ('0' + h) : h;
-        let minute = date.getMinutes();
-        minute = minute < 10 ? ('0' + minute) : minute;
-        return y + '-' + m + '-' + d + ' ' + h + ':' + minute
+        return date.getFullYear() + '-' + m + '-' + d
       };
     }
   },
@@ -160,8 +158,9 @@ export default {
   async created () {
     this.current_date = new Date().getTime()
     this.choose_date = this.current_date
-    this.all_get_record = new Map()
-    this.all_get_record.set(this.current_date, [])
+    //缓存已请求的某天的记录
+    this.all_get_record = (new Map())
+    all_get_record.set(this.current_date, [])
     try {
       //获取时间
       const { code, data } = (await get_first_date_record()).data

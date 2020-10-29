@@ -10,14 +10,10 @@
       />username
     </view>
 
-    <view class="user-bottom-btn-container">
-      <!-- 默认进入小程序即要获取信息和登录，所以不存在登出逻辑 -->
-      <button type="primary" v-if="!isLogin" @tap="login">登陆</button>
-      <template v-else @tap="toRecord">
-        <van-icon name="todo-list-o" size="2rem" color="green" />
-        <view style="color: green">访问记录</view>
-        <button type="warning" @tap="log">登出</button>
-      </template>
+    <view class="user-bottom-btn-container" @tap="toRecord">
+      <!-- 默认进入小程序即要获取信息和登录，所以不存在登出逻辑，此处默认在初始化生命周期内进行登录所以不存在手动登录 -->
+      <van-icon name="todo-list-o" size="2rem" color="green" />
+      <view style="color: green; margin-bottom: 1.5rem">访问记录</view>
     </view>
   </view>
 </template>
@@ -37,18 +33,11 @@ export default {
     toRecord () {
       this.$taro.navigateTo({ url: '../record/record' })
     },
-    ...mapActions({
-      login: 'user/login',
-      logout: 'user/logout',
-    })
   },
   computed: {
     ...mapState({
       userInfo: (state) => state.user.userInfo
     }),
-    ...mapGetters({
-      isLogin: 'user/isLogin'
-    })
   },
   watch: {},
   async created () {

@@ -58,7 +58,6 @@
       <hardware
         :hardware="hardware"
         @tap="toCusHardW(hardware.id)"
-        :server_group_id="server_group_id"
         :server_id="server.server_id"
       ></hardware>
     </view>

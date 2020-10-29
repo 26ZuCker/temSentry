@@ -22,22 +22,7 @@ const App = new Vue({
   async created() {
     if (process.env.TARO_ENV === 'weapp') {
       Taro.cloud.init();
-      /* 
-      await Taro.getStorage({
-        key: 'openid',
-        success: async function(res) {
-          await store.dispatch('user/login');
-        },
-        fail: async function(error) {
-          if (error === 'getStorage:fail data not found') {
-            const [res1, res2] = await Promise.all([store.dispatch('user/getOpenid'), store.dispatch('user/getUser')]);
-            console.log(res1);
-            console.log(res2);
-          } else {
-            console.log(error);
-          }
-        },
-      }); */
+      //await Promise.all([]);
     }
   },
   onShow(options) {},

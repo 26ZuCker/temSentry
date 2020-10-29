@@ -1,6 +1,6 @@
-import Taro, { getSetting, getUserInfo } from '@tarojs/taro';
+import Taro from '@tarojs/taro';
 
-import { get_userInfo, logout } from '@/apis/user.js';
+import { get_userInfo } from '@/apis/user.js';
 
 const state = {
   openid: '',
@@ -40,9 +40,9 @@ const actions = {
     }
   },
   /**
-   * 获取用户信息
+   * 获取存储在微信的用户信息如昵称和头像url，优先
    */
-  async getUser({ commit }) {
+  async getUserWeChat({ commit }) {
     try {
       await Taro.getSetting({
         async success(res) {
@@ -65,6 +65,7 @@ const actions = {
   /**
    * 小程序端的登录本质只是根据openid向后端请求个人信息
    * 根据code即自定义状态码确定该openid是否已
+   * 小程序端不需要登出
    */
   async login({ commit, state, dispatch }) {
     if (state.openid !== '') {
@@ -88,25 +89,9 @@ const actions = {
         return Promise.reject(error);
       }
     } else {
-      dispatch('getOpenid');
-      this.login();
+      await dispatch('getOpenid');
+      dispatch('login');
     }
-  },
-  /**
-   * 小程序端的登出本质只是清空本地缓存
-   */
-  async logout({ commit }) {
-    commit('reset_openid');
-    commit('reset_userInfo');
-    await Taro.removeStorage('openid');
-  },
-};
-const getters = {
-  /**
-   * 由于是判断函数则必须同步
-   */
-  isLogin(state) {
-    return state.userInfo !== null;
   },
 };
 export default {
@@ -114,5 +99,4 @@ export default {
   state,
   mutations,
   actions,
-  getters,
 };
