@@ -1,17 +1,20 @@
 <template functional>
   <van-collapse :value="data.isShowDetail" @change="$options.showDetail">
     <van-collapse-item name="1" title="实验室状态">
-      <slot-view name="value" v-if="$options.isComputerAlarm">
+      <!--       <slot-view name="value" v-if="$options.isComputerAlarm">
         <van-icon :name="imgExclamation" />
-      </slot-view>
+      </slot-view> -->
       <!-- 展示当前服务器所属实验室即局域的整体信息，采用tag或进度条方式展示 -->
-      <van-cell-group v-for="data in props.computer_room_dataArr" :key="data.name">
+      <van-cell-group
+        v-for="data in props.computer_room_dataArr"
+        :key="data.name"
+      >
         <van-cell>
           <van-progress
-            :pivot-text="$options.roomText(data.name,data.value)"
-            :color="$options.stateColor(data.value,data.warning_value)"
+            :pivot-text="$options.roomText(data.name, data.value)"
+            :color="$options.stateColor(data.value, data.warning_value)"
             custom-class="progress-position"
-            :percentage="$options.percent(data.value,data.warning_value)"
+            :percentage="$options.percent(data.value, data.warning_value)"
           />
         </van-cell>
       </van-cell-group>

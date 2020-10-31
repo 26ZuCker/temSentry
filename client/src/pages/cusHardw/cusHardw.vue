@@ -42,7 +42,11 @@
 
 <script>
 import Notify from '../../components/vant-weapp/dist/notify/notify.js'
-import { get_hardware_data, save_hardware_data } from '../../apis/server.js'
+import {
+  add_server_data,
+  get_all_server_data,
+  set_warning_temperature,
+} from '@/apis/server.js'
 
 export default {
   inheritAttrs: false,

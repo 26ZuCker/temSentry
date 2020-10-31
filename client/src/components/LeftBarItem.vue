@@ -10,18 +10,19 @@
       :class="activeClass(server.server_id)"
     >
       <text
-        @tap="chooseServer(server.server_id,server_group.server_group_id)"
-      >{{server.server_name}}</text>
-      <van-icon :name="imgExclamation" color="orange" v-if="toBool(server.is_alarm)" />
+        @tap="chooseServer(server.server_id, server_group.server_group_id)"
+        >{{ server.server_name }}</text
+      >
+      <!--  <van-icon :name="imgExclamation" color="orange" v-if="toBool(server.is_alarm)" /> -->
     </view>
-    <slot-view name="value">
+    <!--     <slot-view name="value">
       <van-icon
         :name="imgExclamation"
         color="orange"
         size="1.5rem"
         v-if="toBool(server_group.is_alarm)"
       />
-    </slot-view>
+    </slot-view> -->
   </van-collapse-item>
 </template>
 

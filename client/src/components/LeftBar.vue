@@ -23,30 +23,13 @@
           @tap="chooseServer(server.server_id)"
           >{{ server.server_name }}</text
         >
-        <van-icon
-          :name="imgExclamation"
-          color="orange"
-          v-if="toBool(server.is_alarm)"
-        />
       </view>
-
-      <!--       <van-icon
-        :name="imgExclamation"
-        color="orange"
-        size="1.5rem"
-        v-if="toBool(server_group.is_alarm)"
-      /> -->
     </view>
-
-    <!-- 底部额外增加需要监控的服务器 -->
-    <!--     <view class="left-bar-btn-container">
-      <van-icon name="add-o" size="2rem" color="green" @tap="toCus" />
-    </view>-->
   </view>
 </template>
 
 <script>
-import imgExclamation from '../images/exclamation.png'
+//import imgExclamation from '../images/exclamation.png'
 export default {
   inheritAttrs: false,
   components: {},
@@ -56,11 +39,12 @@ export default {
     searchInput: '',
     //额外维护一个需要预警的服务器id数组而无需总是使用computed
     hasProblem: [],
-    imgExclamation: imgExclamation
+    //imgExclamation: imgExclamation
   }),
   props: {
     //后续需要优化不需要传递完整的服务器组
     server_id: { type: String, default: null },
+    server_list: { type: Array, default: function () { return [] } }
   },
   computed: {
     activeClass () {
@@ -89,14 +73,7 @@ export default {
       this.current_server_id = server_id
       this.$emit('onChooseServer', server_id)
     },
-    /* toCus () {
-      this.$taro.navigateTo({ url: '../cusHardw/cusHardw' })
-    }, */
   },
-  //由于初始化即刚进入程序时index页面也是默认显示第一个组的第一个服务器
-  created () {
-
-  }
 }
 </script>
 
