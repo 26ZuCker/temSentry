@@ -3,23 +3,21 @@ import apiConfig from './apiConfig.js';
 
 const { BASE_API, promisifyHttp } = apiConfig;
 
-const recordApiMap = {
+const errorMsgApiMap = {
   get_day_record: { method: 'POST', url: 'get_day_record' },
-  get_first_date_record: { method: 'POST', url: 'get_first_date_record' },
-  get_all_record: { method: 'POST', url: 'get_all_record' },
+  get_earliest_record_timestamp: { method: 'POST', url: 'get_earliest_record_timestamp' },
 };
+/**
+ * 获取某天所有来访记录
+ */
+const get_day_record = promisifyHttp(Taro, BASE_API, errorMsgApiMap['get_day_record']);
+/**
+ * 获取最早时间戳
+ */
+const get_earliest_record_timestamp = promisifyHttp(
+  Taro,
+  BASE_API,
+  errorMsgApiMap['get_earliest_record_timestamp']
+);
 
-/**
- * 获取某一天的访问记录
- */
-const get_day_record = promisifyHttp(Taro, BASE_API, recordApiMap['get_day_record']);
-/**
- * 获取all time最早的访问记录的日期yyyy-mm-dd
- */
-const get_first_date_record = promisifyHttp(Taro, BASE_API, recordApiMap['get_first_date_record']);
-/**
- * 获取所有访问记录
- */
-const get_all_record = promisifyHttp(Taro, BASE_API, recordApiMap['get_all_record']);
-
-export { get_day_record, get_first_date_record, get_all_record };
+export { get_day_record, get_earliest_record_timestamp };

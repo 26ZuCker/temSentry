@@ -56,16 +56,16 @@ import {
   get_server_data,
   //
   get_all_server_data,
-} from '@/apis/server.js'
+} from '@api/server.js'
 
 //由于左侧边栏载入数据量过大则采用taro的预渲染该组件
 import LeftBar from '../../components/LeftBar'
 
 export default {
   components: {
-    hardware: () => import('@/components/hardware'),
+    hardware: () => import('@com/hardware'),
     LeftBar: LeftBar,
-    Progress: () => import('@/components/Progress')
+    Progress: () => import('@com/Progress')
   },
   data: () => ({
     //组件显示项

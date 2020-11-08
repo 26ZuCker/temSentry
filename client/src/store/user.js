@@ -1,6 +1,6 @@
 import Taro from '@tarojs/taro';
-
-import { get_userInfo } from '@/apis/user.js';
+import { getOpenid, getWCInfo } from '@util/WeChat';
+import { get_userInfo } from '@api/user.js';
 
 const state = {
   openid: '',
@@ -49,7 +49,7 @@ const actions = {
           if (res.authSetting['scope.userInfo']) {
             // 已经授权，可以直接调用 getUserInfo 获取头像昵称
             await Taro.getUserInfo({
-              success: function(res) {
+              success: function (res) {
                 console.log(res);
                 commit('set_userInfo', res.userInfo);
                 return Promise.resolve(res.userInfo);

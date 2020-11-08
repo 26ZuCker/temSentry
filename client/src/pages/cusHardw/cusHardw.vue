@@ -46,7 +46,7 @@ import {
   add_server_data,
   get_all_server_data,
   set_warning_temperature,
-} from '@/apis/server.js'
+} from '@api/server.js'
 
 export default {
   inheritAttrs: false,

@@ -22,7 +22,7 @@ const App = new Vue({
   async created() {
     if (process.env.TARO_ENV === 'weapp') {
       Taro.cloud.init();
-      //await Promise.all([]);
+      //await store.dispatch('user/login')
     }
   },
   onShow(options) {},

@@ -6,7 +6,7 @@
       :title="recordTitle"
       value="0"
       link
-      @tap="isShowPopup = true"
+      @tap="showPopup = true"
       is-link
       arrow-direction="down"
       :clickable="true"
@@ -14,20 +14,20 @@
       <van-icon name="calendar-o" slot="right-icon" class="custom-icon" />
     </van-cell>
     <van-popup
-      :show="isShowPopup"
+      :show="showPopup"
       round
       position="bottom"
       closeable
       close-icon="close"
       custom-style="height: 30%"
-      @close="isShowPopup = false"
+      @close="showPopup = false"
     >
       <!-- 由于直接渲染多个日历组件的性能过差所以选择底部抽屉展示三杆滑动选择器 -->
       <van-datetime-picker
         type="date"
         :value="choose_date"
         @confirm="confirmDate"
-        @cancel="isShowPopup = false"
+        @cancel="showPopup = false"
         @input="inputDate"
         :min-date="minDate"
         :max-date="today_date"
@@ -62,15 +62,13 @@
 </template>
 
 <script>
-
-//api
-import { get_day_record, get_first_date_record } from '@/apis/record.js'
+import { get_day_record, get_earliest_record_timestamp } from '@api/record.js'
 //类型判断
-import { isArray } from '@/utils/judgeType'
+import { isArray } from '@util/judgeType'
 //防抖
-import { debounce } from '@/utils/HO'
+import { debounce } from '@util/HO'
 //格式化时间戳
-import formatTime from '@/utils/formatTime'
+import formatTime from '@util/formatTime'
 
 const today_date = new Date()
 
@@ -90,7 +88,7 @@ export default {
     choose_date: null,
     minDate: null,
     activeNames: ['1'],
-    isShowPopup: false,
+    showPopup: false,
     //hash缓存以避免重复请求
     //all_get_record: null,
     current_record: [],
@@ -103,9 +101,6 @@ export default {
           return value;
         } */
   }),
-  wacth: {
-    current_date (n) { console.log(n) }
-  },
   methods: {
     //更改当前选择日期的时间戳，查看源码是否已做防抖的优化
     //此处由于vant的限制不能使用防抖节流以避免setData
@@ -114,7 +109,7 @@ export default {
     },
     confirmDate () {
       this.current_date = new Date(this.choose_date)
-      this.isShowPopup = false
+      this.showPopup = false
       this.getDayRecord()
     },
     //已访问则缓存在hash，否则才发送http请求，后续建议维护LRU
@@ -177,7 +172,7 @@ export default {
 
     try {
       //获取时间下限
-      const { code, data } = (await get_first_date_record()).data
+      const { code, data } = (await get_earliest_record_timestamp()).data
       if (code !== -1) {
         this.minDate = new Date('1603781466')
       }

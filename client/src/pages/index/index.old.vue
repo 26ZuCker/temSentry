@@ -73,16 +73,16 @@ import imgMore from '../../images/more.png'
 //获取定时任务配置
 import scheduleConfig from '../../utils/schedule.js'
 //获取api
-import { get_all_data, get_computer_room_data, get_hardware_data, get_server_data } from '@/apis/server.js'
+import { get_all_data, get_computer_room_data, get_hardware_data, get_server_data } from '@api/server.js'
 
 //由于左侧边栏载入数据量过大则采用taro的预渲染该组件
 //import LeftBar from '../../components/LeftBar'
 
 export default {
   components: {
-    hardware: () => import('@/components/hardware'),
-    LeftBar: () => import('@/components/LeftBar'),
-    Progress: () => import('@/components/Progress')
+    hardware: () => import('@com/hardware'),
+    LeftBar: () => import('@com/LeftBar'),
+    Progress: () => import('@com/Progress')
   },
   data: () => ({
     //组件显示项
