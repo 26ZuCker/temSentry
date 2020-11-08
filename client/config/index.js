@@ -1,6 +1,6 @@
 const path = require('path');
 const config = {
-  projectName: 'taroFace',
+  projectName: 'temSentry',
   date: '2020-9-11',
   designWidth: 750,
   deviceRatio: {
@@ -75,7 +75,7 @@ const config = {
   }, */
 };
 
-module.exports = function(merge) {
+module.exports = function (merge) {
   if (process.env.NODE_ENV === 'development') {
     return merge({}, config, require('./dev'));
   }
