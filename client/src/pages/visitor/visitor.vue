@@ -3,11 +3,20 @@
     <!-- 顶部头像栏和提示栏 -->
     <view></view>
     <!-- 所需填写表单主体 -->
-    <vam-cell-group>
-      <van-field></van-field>
-    </vam-cell-group>
+    <van-cell-group>
+      <van-field
+        :value="i.value"
+        @change="onInput(key, $event)"
+        required
+        clearable
+        :label="i.title"
+        :placeholder="placeholderTitle(i.title)"
+        v-for="(i, key) in form"
+        :key="i.title"
+      ></van-field>
+    </van-cell-group>
     <!-- 提交按钮 -->
-    <van-button>{{ btnText }}</van-button>
+    <van-button @tap="submitChange">{{ btnText }}</van-button>
   </view>
 </template>
 
@@ -16,7 +25,7 @@ import { add_record, confirm_record, get_userInfo_template, get_record_form } fr
 
 export default {
   inheritAttrs: false,
-  name: 'cusInfo',
+  name: 'visitor',
   components: {},
   data: () => ({
     form: null,
@@ -24,6 +33,22 @@ export default {
   }),
   props: {},
   methods: {
+    /**
+     * 响应点击按钮事件
+     */
+    submitChange () {
+      if (this.hasSubmit) {
+        this.onOut()
+      } else {
+        this.onAdd()
+      }
+    },
+    /**
+    * 监听表单输入，后期注意防抖
+    */
+    onInput (key, $event) {
+      this.form[key].value = $event.detail
+    },
     /**
     * 校验表单输入值合法性：
     * 1.是否填写完毕
@@ -92,7 +117,7 @@ export default {
     /**
      * 表单输入框提示文本
      */
-    placeholderText () {
+    placeholderTitle () {
       return function (title) {
         return `请输入${title}`
       }
@@ -112,4 +137,5 @@ export default {
 </script>
 
 <style lang='scss'>
+@import url("./visitor.scss");
 </style>
